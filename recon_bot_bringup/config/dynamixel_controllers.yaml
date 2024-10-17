@@ -1,0 +1,16 @@
+dynamixel_info:
+  ids: [1, 2, 3, 4]  # The Dynamixel motor IDs for the 4 Mecanum wheels
+  model: MX-106      # The model of the Dynamixel motor (e.g., MX-106R)
+
+# Specify which port the controller is using, and baudrate
+port_info:
+  device_name: "/dev/ttyUSB0"  # Change this to your correct serial port
+  baud_rate: 57600             # Adjust baud rate according to your setup
+  protocol_version: 1.0        # Protocol version of the Dynamixel motors
+
+# Joint names for each wheel
+joint_name: 
+  J_Wheel_LF: 4
+  J_Wheel_LR: 2
+  J_Wheel_RF: 3
+  J_Wheel_RR: 1

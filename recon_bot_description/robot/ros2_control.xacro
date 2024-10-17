@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <ros2_control name="RealRobot" type="system">
+        <hardware>
+            <plugin>mecanumdrive_arduino/MecanumDriveArduinoHardware</plugin>
+            <param name="left_wheel_name">J_Wheel_LF</param>
+            <param name="right_wheel_name">J_Wheel_LR</param>
+            <param name="left_wheel_name">J_Wheel_RF</param>
+            <param name="right_wheel_name">J_Wheel_RR</param>
+            <param name="loop_rate">30</param>
+            <param name="device">/dev/ttyUSB0</param>
+            <param name="baud_rate">57600</param>
+            <param name="timeout_ms">1000</param>
+            <param name="enc_counts_per_rev">3436</param>
+        </hardware>
+        <joint name="left_wheel_joint">
+            <command_interface name="velocity">
+                <param name="min">-10</param>
+                <param name="max">10</param>
+            </command_interface>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+        </joint>
+        <joint name="right_wheel_joint">
+            <command_interface name="velocity">
+                <param name="min">-10</param>
+                <param name="max">10</param>
+            </command_interface>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+        </joint>
+        <joint name="right_wheel_joint">
+            <command_interface name="velocity">
+                <param name="min">-10</param>
+                <param name="max">10</param>
+            </command_interface>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+        </joint>
+        <joint name="right_wheel_joint">
+            <command_interface name="velocity">
+                <param name="min">-10</param>
+                <param name="max">10</param>
+            </command_interface>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+        </joint>
+
+    </ros2_control>
+
+</robot>

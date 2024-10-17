@@ -1,0 +1,36 @@
+# wheel visual properties 
+wheel_radius: "0.08"
+wheel_thickness: "0.04"
+wheel_separation: "0.45"
+wheel_color: "0 0 0 1"
+# base visual properties 
+base_length: "0.65"
+base_width: "0.55"
+base_height: "0.25"
+base_elevation: "0.04"
+package_name: "fibo_mmcb_description"
+base_mesh_path: "meshes/coconut.stl"
+base_mesh_z_offset: "0.018"
+base_color: "1 1 1 1"
+# castor visual properties 
+castor_radius: "0.035"
+castor_thickness: "0.02"
+castor_separation_x: "0.46"
+castor_separation_y: "0.32"
+castor_color: "0.5 0.5 0 1" 
+
+# pole contact properties
+pole_radius: "0.015"
+pole_height: "0.05"
+pole_separation_x: "0.47"
+pole_separation_y: "0.4"
+ # lidar visual properties 
+lidar_radius: "0.035"
+lidar_thickness: "0.04"
+lidar_offset: "0.22"
+
+# camera visual properties 
+camera_offset: "0.317"
+camera_height: "0.1"
+  
+  

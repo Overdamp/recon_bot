@@ -1,0 +1,1849 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="recon_bot_description">
+
+  <link name="odom">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 3.14" />
+  </link>
+
+  <link name="base_footprint">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 3.14" />
+  </link>
+
+  <joint name="odom_to_basefootprint" type="fixed">
+    <parent link="odom"/>
+    <child link="base_footprint"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+  </joint>
+
+  <link
+    name="Mobile_Base">
+    <inertial>
+      <origin
+        xyz="-0.000901764538349642 0.00289486712536702 -0.140394651236372"
+        rpy="0 0 0" />
+      <mass
+        value="12.2070426110808" />
+      <inertia
+        ixx="0.100263210317857"
+        ixy="0.000416138117875011"
+        ixz="1.90955749720013E-07"
+        iyy="0.0777870248737817"
+        iyz="-4.99662188803516E-08"
+        izz="0.15510236958373" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Mobile_Base.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="basefootprint_to_base" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="Mobile_Base"/>
+    <origin rpy="0 0 0" xyz="0 0 0.5"/>
+  </joint>
+
+  <link
+    name="Wheel_LF">
+    <inertial>
+      <origin
+        xyz="-3.68604325448052E-05 8.74696815861276E-06 -0.000155511793327179"
+        rpy="0 0 0" />
+      <mass
+        value="0.774041102749819" />
+      <inertia
+        ixx="0.000555068815324583"
+        ixy="2.15732280355057E-07"
+        ixz="-1.85654347062673E-10"
+        iyy="0.000555930826369468"
+        iyz="2.27283260482476E-10"
+        izz="0.000988906210850007" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Wheel_LF.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.898039215686275 0.917647058823529 0.929411764705882 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="J_Wheel_LF"
+    type="continuous">
+    <origin
+      xyz="-0.196999999999994 0.243373703143014 -0.410500520826094"
+      rpy="1.5707963267949 -0.698892577239709 1.57079632679526" />
+    <parent
+      link="Mobile_Base" />
+    <child
+      link="Wheel_LF" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="Roller_LF_1">
+    <inertial>
+      <origin
+        xyz="-3.83185982943957E-10 -5.66471758389753E-10 -6.83960459935129E-08"
+        rpy="0 0 0" />
+      <mass
+        value="0.0352584429300109" />
+      <inertia
+        ixx="1.04260747160857E-05"
+        ixy="-3.74985932672452E-16"
+        ixz="3.16159847322509E-11"
+        iyy="1.04260747162552E-05"
+        iyz="-7.59166287983956E-12"
+        izz="3.24617145964053E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Roller_LF_1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.298039215686275 0.298039215686275 0.298039215686275 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="J_Roller_LF_1"
+    type="continuous">
+    <origin
+      xyz="0.0495000000000021 0 0"
+      rpy="0 0.785398163397682 1.57079632679483" />
+    <parent
+      link="Wheel_LF" />
+    <child
+      link="Roller_LF_1" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="Roller_LF_2">
+    <inertial>
+      <origin
+        xyz="-3.09857084435095E-10 1.10555134491541E-09 -4.17113807937852E-08"
+        rpy="0 0 0" />
+      <mass
+        value="0.0352584429300112" />
+      <inertia
+        ixx="1.04260761905347E-05"
+        ixy="2.10247077096114E-16"
+        ixz="-2.4788845562525E-11"
+        iyy="1.04260761890094E-05"
+        iyz="-2.10620761179513E-11"
+        izz="3.24617146052916E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Roller_LF_2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.298039215686275 0.298039215686275 0.298039215686275 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="J_Roller_LF_2"
+    type="continuous">
+    <origin
+      xyz="0.0350017856687387 0.0350017856687551 0"
+      rpy="0 0.785398163397817 2.35619449019253" />
+    <parent
+      link="Wheel_LF" />
+    <child
+      link="Roller_LF_2" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="Roller_LF_3">
+    <inertial>
+      <origin
+        xyz="7.28457724696874E-09 2.76751455086099E-09 2.27604661784397E-08"
+        rpy="0 0 0" />
+      <mass
+        value="0.0352584429300111" />
+      <inertia
+        ixx="1.04260768064924E-05"
+        ixy="-1.98661171978739E-14"
+        ixz="-3.25498755598683E-11"
+        iyy="1.04260768503918E-05"
+        iyz="-1.43134028288981E-12"
+        izz="3.2461715182147E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Roller_LF_3.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.298039215686275 0.298039215686275 0.298039215686275 1" />
+      </material>
+    </visual>
+    
+  </link>
+  <joint
+    name="J_Roller_LF_3"
+    type="continuous">
+    <origin
+      xyz="0 0.0494999999999665 0"
+      rpy="0 0.785398163397733 -3.14159265358936" />
+    <parent
+      link="Wheel_LF" />
+    <child
+      link="Roller_LF_3" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="Roller_LF_4">
+    <inertial>
+      <origin
+        xyz="-8.85009204809606E-10 8.87345419364749E-10 -1.82681258453776E-08"
+        rpy="0 0 0" />
+      <mass
+        value="0.035258442930011" />
+      <inertia
+        ixx="1.04260768940346E-05"
+        ixy="6.843225238284E-16"
+        ixz="-1.09712169237017E-11"
+        iyy="1.04260768941284E-05"
+        iyz="3.06406603017413E-11"
+        izz="3.24617146037589E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Roller_LF_4.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.298039215686275 0.298039215686275 0.298039215686275 1" />
+      </material>
+    </visual>
+    
+  </link>
+  <joint
+    name="J_Roller_LF_4"
+    type="continuous">
+    <origin
+      xyz="-0.0350017856687272 0.0350017856687195 0"
+      rpy="0 0.785398163397478 -2.35619449019179" />
+    <parent
+      link="Wheel_LF" />
+    <child
+      link="Roller_LF_4" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="Roller_LF_5">
+    <inertial>
+      <origin
+        xyz="1.60439110885591E-08 5.69080083057116E-09 1.2380305391968E-07"
+        rpy="0 0 0" />
+      <mass
+        value="0.035258442930011" />
+      <inertia
+        ixx="1.04260694141622E-05"
+        ixy="-9.94372503073185E-14"
+        ixz="-1.26413841544385E-11"
+        iyy="1.04260696259208E-05"
+        iyz="2.99325036340899E-11"
+        izz="3.24617174875245E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Roller_LF_5.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.298039215686275 0.298039215686275 0.298039215686275 1" />
+      </material>
+    </visual>
+    
+  </link>
+  <joint
+    name="J_Roller_LF_5"
+    type="continuous">
+    <origin
+      xyz="-0.0495000000000251 0 0"
+      rpy="0 0.785398163397209 -1.57079632679442" />
+    <parent
+      link="Wheel_LF" />
+    <child
+      link="Roller_LF_5" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="Roller_LF_6">
+    <inertial>
+      <origin
+        xyz="-3.825635364052E-10 -1.68518193843781E-09 4.39527294560094E-08"
+        rpy="0 0 0" />
+      <mass
+        value="0.0352584429300111" />
+      <inertia
+        ixx="1.04260760941714E-05"
+        ixy="-2.85658102752809E-16"
+        ixz="2.80429237954922E-11"
+        iyy="1.04260760917002E-05"
+        iyz="1.65168143921329E-11"
+        izz="3.24617146148317E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Roller_LF_6.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.298039215686275 0.298039215686275 0.298039215686275 1" />
+      </material>
+    </visual>
+    
+  </link>
+  <joint
+    name="J_Roller_LF_6"
+    type="continuous">
+    <origin
+      xyz="-0.0350017856687449 -0.0350017856687672 0"
+      rpy="0 0.785398163397077 -0.785398163397211" />
+    <parent
+      link="Wheel_LF" />
+    <child
+      link="Roller_LF_6" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="Roller_LF_7">
+    <inertial>
+      <origin
+        xyz="4.28941293595386E-09 8.82995787598873E-10 -1.01682179981522E-07"
+        rpy="0 0 0" />
+      <mass
+        value="0.0352584429300109" />
+      <inertia
+        ixx="1.04260718732603E-05"
+        ixy="-4.33398087044761E-15"
+        ixz="2.94154428727412E-11"
+        iyy="1.04260718866193E-05"
+        iyz="-1.4005428896808E-11"
+        izz="3.2461714747039E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Roller_LF_7.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.298039215686275 0.298039215686275 0.298039215686275 1" />
+      </material>
+    </visual>
+    
+  </link>
+  <joint
+    name="J_Roller_LF_7"
+    type="continuous">
+    <origin
+      xyz="0 -0.0494999999999995 0"
+      rpy="0 0.785398163397161 0" />
+    <parent
+      link="Wheel_LF" />
+    <child
+      link="Roller_LF_7" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="Roller_LF_8">
+    <inertial>
+      <origin
+        xyz="-4.45606107568608E-10 -1.68479385997955E-09 4.58650017132189E-08"
+        rpy="0 0 0" />
+      <mass
+        value="0.0352584429300115" />
+      <inertia
+        ixx="1.04260760091362E-05"
+        ixy="-3.83896454579771E-16"
+        ixz="3.22721314246384E-11"
+        iyy="1.04260760061884E-05"
+        iyz="-4.12147536543168E-12"
+        izz="3.24617146194952E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Roller_LF_8.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.298039215686275 0.298039215686275 0.298039215686275 1" />
+      </material>
+    </visual>
+    
+  </link>
+  <joint
+    name="J_Roller_LF_8"
+    type="continuous">
+    <origin
+      xyz="0.0350017856687419 -0.0350017856687232 0"
+      rpy="0 0.785398163397412 0.785398163397306" />
+    <parent
+      link="Wheel_LF" />
+    <child
+      link="Roller_LF_8" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="Wheel_LR">
+    <inertial>
+      <origin
+        xyz="2.28750886412388E-05 4.38499760812283E-05 -0.000160556590807603"
+        rpy="0 0 0" />
+      <mass
+        value="0.286935584537691" />
+      <inertia
+        ixx="0.000205567523367468"
+        ixy="4.86825936022437E-10"
+        ixz="5.22777710432475E-10"
+        iyy="0.000205922237695722"
+        iyz="8.40224944645304E-11"
+        izz="0.000366267561115225" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Wheel_LR.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Wheel_LR.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="J_Wheel_LR"
+    type="continuous">
+    <origin
+      xyz="-0.197 -0.243373703143012 -0.410500520826101"
+      rpy="1.5707963267949 -0.479686767241463 1.57079632679489" />
+    <parent
+      link="Mobile_Base" />
+    <child
+      link="Wheel_LR" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="Roller_LR_1">
+    <inertial>
+      <origin
+        xyz="1.67015073992971E-08 1.25504300840795E-08 1.06866803406547E-07"
+        rpy="0 0 0" />
+      <mass
+        value="0.0352584429300112" />
+      <inertia
+        ixx="1.04260715177521E-05"
+        ixy="-2.16967544708089E-13"
+        ixz="-9.22230104291594E-12"
+        iyy="1.04260716218938E-05"
+        iyz="3.09410049840542E-11"
+        izz="3.24617190478417E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Roller_LR_1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.298039215686275 0.298039215686275 0.298039215686275 1" />
+      </material>
+    </visual>
+    
+  </link>
+  <joint
+    name="J_Roller_LR_1"
+    type="continuous">
+    <origin
+      xyz="0.0494999999999991 0 0"
+      rpy="0 0.785398163397451 -1.57079632679496" />
+    <parent
+      link="Wheel_LR" />
+    <child
+      link="Roller_LR_1" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="Roller_LR_2">
+    <inertial>
+      <origin
+        xyz="7.42938899289669E-09 -8.73704070203374E-09 8.61521962658429E-08"
+        rpy="0 0 0" />
+      <mass
+        value="0.0352584429300108" />
+      <inertia
+        ixx="1.04260734013828E-05"
+        ixy="6.31409768982622E-14"
+        ixz="9.33284556977417E-12"
+        iyy="1.04260733892382E-05"
+        iyz="3.12763115710681E-11"
+        izz="3.2461715855996E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Roller_LR_2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.298039215686275 0.298039215686275 0.298039215686275 1" />
+      </material>
+    </visual>
+    
+  </link>
+  <joint
+    name="J_Roller_LR_2"
+    type="continuous">
+    <origin
+      xyz="0.0350017856687349 0.0350017856687338 0"
+      rpy="0 0.785398163397457 -0.785398163397507" />
+    <parent
+      link="Wheel_LR" />
+    <child
+      link="Roller_LR_2" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="Roller_LR_3">
+    <inertial>
+      <origin
+        xyz="-2.48421372361918E-09 -3.8649139000313E-08 3.87014362224214E-09"
+        rpy="0 0 0" />
+      <mass
+        value="0.0352584429300109" />
+      <inertia
+        ixx="1.02720896688601E-05"
+        ixy="5.25739053234605E-07"
+        ixz="8.97501577058071E-07"
+        iyy="8.63112731680581E-06"
+        iyz="-3.06419984523447E-06"
+        izz="5.19511092199813E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Roller_LR_3.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.298039215686275 0.298039215686275 0.298039215686275 1" />
+      </material>
+    </visual>
+    
+  </link>
+  <joint
+    name="J_Roller_LR_3"
+    type="continuous">
+    <origin
+      xyz="0 0.0494999999999999 0"
+      rpy="0 0.785398163397457 -0.785398163397507" />
+    <parent
+      link="Wheel_LR" />
+    <child
+      link="Roller_LR_3" />
+    <axis
+      xyz="0.146446609406722 -0.499999999999993 -0.853553390593279" />
+  </joint>
+  <link
+    name="Roller_LR_4">
+    <inertial>
+      <origin
+        xyz="7.63942531456507E-09 -1.99390438604397E-08 1.1846500916346E-07"
+        rpy="0 0 0" />
+      <mass
+        value="0.0352584429300108" />
+      <inertia
+        ixx="1.0426070450002E-05"
+        ixy="1.65232144271412E-13"
+        ixz="3.13331495062905E-11"
+        iyy="1.04260701130261E-05"
+        iyz="-7.04608640492049E-12"
+        izz="3.24617193052735E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Roller_LR_4.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.298039215686275 0.298039215686275 0.298039215686275 1" />
+      </material>
+    </visual>
+    
+  </link>
+  <joint
+    name="J_Roller_LR_4"
+    type="continuous">
+    <origin
+      xyz="-0.0350017856687312 0.035001785668738 0"
+      rpy="0 0.78539816339745 0.785398163397392" />
+    <parent
+      link="Wheel_LR" />
+    <child
+      link="Roller_LR_4" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="Roller_LR_5">
+    <inertial>
+      <origin
+        xyz="-1.13800639467421E-08 -2.23572448332376E-08 -1.39705523066747E-07"
+        rpy="0 0 0" />
+      <mass
+        value="0.035258442930011" />
+      <inertia
+        ixx="1.04260677298263E-05"
+        ixy="-2.58295319819987E-13"
+        ixz="1.92470991858287E-11"
+        iyy="1.0426067392854E-05"
+        iyz="-2.66026490431678E-11"
+        izz="3.24617207497984E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Roller_LR_5.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.298039215686275 0.298039215686275 0.298039215686275 1" />
+      </material>
+    </visual>
+    
+  </link>
+  <joint
+    name="J_Roller_LR_5"
+    type="continuous">
+    <origin
+      xyz="-0.0494999999999998 0 0"
+      rpy="0 0.785398163397442 1.57079632679484" />
+    <parent
+      link="Wheel_LR" />
+    <child
+      link="Roller_LR_5" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="Roller_LR_6">
+    <inertial>
+      <origin
+        xyz="2.33893460155343E-10 1.54178639300007E-09 -2.60845123278841E-08"
+        rpy="0 0 0" />
+      <mass
+        value="0.035258442930011" />
+      <inertia
+        ixx="1.04260767232418E-05"
+        ixy="-3.71422041546879E-16"
+        ixz="3.32532285718695E-12"
+        iyy="1.04260767205083E-05"
+        iyz="-3.23584129250263E-11"
+        izz="3.24617146183828E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Roller_LR_6.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.298039215686275 0.298039215686275 0.298039215686275 1" />
+      </material>
+    </visual>
+    
+  </link>
+  <joint
+    name="J_Roller_LR_6"
+    type="continuous">
+    <origin
+      xyz="-0.0350017856687373 -0.035001785668729 0"
+      rpy="0 0.785398163397437 2.35619449019228" />
+    <parent
+      link="Wheel_LR" />
+    <child
+      link="Roller_LR_6" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="Roller_LR_7">
+    <inertial>
+      <origin
+        xyz="1.99958341828843E-08 1.8472178411888E-08 -5.58086615809472E-09"
+        rpy="0 0 0" />
+      <mass
+        value="0.0352584429300108" />
+      <inertia
+        ixx="1.04260773904698E-05"
+        ixy="-3.71094202950359E-13"
+        ixz="-2.21142032202126E-11"
+        iyy="1.04260774492563E-05"
+        iyz="-2.38143341729084E-11"
+        izz="3.24617220352037E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Roller_LR_7.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.298039215686275 0.298039215686275 0.298039215686275 1" />
+      </material>
+    </visual>
+    
+  </link>
+  <joint
+    name="J_Roller_LR_7"
+    type="continuous">
+    <origin
+      xyz="0 -0.0494999999999981 0"
+      rpy="0 0.785398163397437 3.14159265358973" />
+    <parent
+      link="Wheel_LR" />
+    <child
+      link="Roller_LR_7" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="Roller_LR_8">
+    <inertial>
+      <origin
+        xyz="-4.27786778223194E-10 1.50381363750451E-08 -1.39886802030809E-07"
+        rpy="0 0 0" />
+      <mass
+        value="0.0352584429300108" />
+      <inertia
+        ixx="1.04260675049186E-05"
+        ixy="-2.07385810388201E-15"
+        ixz="-2.69590085768581E-11"
+        iyy="1.04260672661416E-05"
+        iyz="-1.75459807670728E-11"
+        izz="3.24617169716258E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Roller_LR_8.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.298039215686275 0.298039215686275 0.298039215686275 1" />
+      </material>
+    </visual>
+    
+  </link>
+  <joint
+    name="J_Roller_LR_8"
+    type="continuous">
+    <origin
+      xyz="0.0350017856687324 -0.035001785668733 0"
+      rpy="0 0.785398163397443 -2.35619449019241" />
+    <parent
+      link="Wheel_LR" />
+    <child
+      link="Roller_LR_8" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="Wheel_RF">
+    <inertial>
+      <origin
+        xyz="2.28374030626366E-05 4.3913212168234E-05 -0.000160482316143525"
+        rpy="0 0 0" />
+      <mass
+        value="0.286934748749192" />
+      <inertia
+        ixx="0.00020556617413596"
+        ixy="1.10285044985226E-14"
+        ixz="5.73034041739302E-10"
+        iyy="0.000205921402223248"
+        iyz="1.10288594143402E-14"
+        izz="0.000366265336032199" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Wheel_RF.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Wheel_RF.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="J_Wheel_RF"
+    type="continuous">
+    <origin
+      xyz="0.197 0.243373703143008 -0.410500520826103"
+      rpy="-1.57079632679488 0.943014448657122 1.57079632679492" />
+    <parent
+      link="Mobile_Base" />
+    <child
+      link="Wheel_RF" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="Roller_RF_1">
+    <inertial>
+      <origin
+        xyz="-2.28876292918123E-08 1.67575591736302E-08 -3.70525532478183E-08"
+        rpy="0 0 0" />
+      <mass
+        value="0.0352584429300108" />
+      <inertia
+        ixx="1.04260766356289E-05"
+        ixy="3.79660531325495E-13"
+        ixz="-2.75547408292055E-11"
+        iyy="1.04260768755305E-05"
+        iyz="1.77785602475058E-11"
+        izz="3.24617225532452E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Roller_RF_1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.298039215686275 0.298039215686275 0.298039215686275 1" />
+      </material>
+    </visual>
+    
+  </link>
+  <joint
+    name="J_Roller_RF_1"
+    type="continuous">
+    <origin
+      xyz="0.0494999999999999 0 0"
+      rpy="0 -0.785398163397448 1.57079632679489" />
+    <parent
+      link="Wheel_RF" />
+    <child
+      link="Roller_RF_1" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="Roller_RF_2">
+    <inertial>
+      <origin
+        xyz="-7.58374141263118E-10 -2.51046117227816E-09 5.45374427840528E-08"
+        rpy="0 0 0" />
+      <mass
+        value="0.0352584429300108" />
+      <inertia
+        ixx="1.04260755789725E-05"
+        ixy="-1.83702642128029E-15"
+        ixz="1.25338284150256E-11"
+        iyy="1.04260755718119E-05"
+        iyz="-2.9985430552703E-11"
+        izz="3.24617146700459E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Roller_RF_2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.298039215686275 0.298039215686275 0.298039215686275 1" />
+      </material>
+    </visual>
+    
+  </link>
+  <joint
+    name="J_Roller_RF_2"
+    type="continuous">
+    <origin
+      xyz="0.0350017856687338 -0.0350017856687341 0"
+      rpy="0 -0.785398163397438 0.785398163397447" />
+    <parent
+      link="Wheel_RF" />
+    <child
+      link="Roller_RF_2" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="Roller_RF_3">
+    <inertial>
+      <origin
+        xyz="1.62190583186117E-08 -2.63133487221623E-09 1.51501947903698E-07"
+        rpy="0 0 0" />
+      <mass
+        value="0.0352584429300107" />
+      <inertia
+        ixx="1.04260655466723E-05"
+        ixy="3.0405123897277E-14"
+        ixz="-4.03828219583914E-12"
+        iyy="1.04260658049207E-05"
+        iyz="3.23463899735662E-11"
+        izz="3.24617172323519E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Roller_RF_3.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.298039215686275 0.298039215686275 0.298039215686275 1" />
+      </material>
+    </visual>
+    
+  </link>
+  <joint
+    name="J_Roller_RF_3"
+    type="continuous">
+    <origin
+      xyz="0 -0.0495 0"
+      rpy="-0.609288783050202 0.53106684913527 2.19857820493268" />
+    <parent
+      link="Wheel_RF" />
+    <child
+      link="Roller_RF_3" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="Roller_RF_4">
+    <inertial>
+      <origin
+        xyz="-1.10020631494123E-09 -2.32654606691085E-09 5.17692528845259E-08"
+        rpy="0 0 0" />
+      <mass
+        value="0.0352584429300106" />
+      <inertia
+        ixx="1.04260757252243E-05"
+        ixy="-2.62052734468842E-15"
+        ixz="1.15087387759186E-11"
+        iyy="1.04260757196874E-05"
+        iyz="-3.03999851193014E-11"
+        izz="3.2461714665715E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Roller_RF_4.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.298039215686275 0.298039215686275 0.298039215686275 1" />
+      </material>
+    </visual>
+    
+  </link>
+  <joint
+    name="J_Roller_RF_4"
+    type="continuous">
+    <origin
+      xyz="-0.0350017856687344 -0.0350017856687337 0"
+      rpy="0 -0.785398163397439 -0.785398163397433" />
+    <parent
+      link="Wheel_RF" />
+    <child
+      link="Roller_RF_4" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="Roller_RF_5">
+    <inertial>
+      <origin
+        xyz="2.43778411346263E-08 -1.78419561625009E-08 5.60706398533561E-08"
+        rpy="0 0 0" />
+      <mass
+        value="0.0352584429300109" />
+      <inertia
+        ixx="1.04260758348702E-05"
+        ixy="4.44263469303027E-13"
+        ixz="2.48069949750729E-11"
+        iyy="1.04260761157679E-05"
+        iyz="-2.0365696684887E-11"
+        izz="3.24617239087806E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Roller_RF_5.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.298039215686275 0.298039215686275 0.298039215686275 1" />
+      </material>
+    </visual>
+    
+  </link>
+  <joint
+    name="J_Roller_RF_5"
+    type="continuous">
+    <origin
+      xyz="-0.0495 0 0"
+      rpy="0 -0.785398163397448 -1.57079632679488" />
+    <parent
+      link="Wheel_RF" />
+    <child
+      link="Roller_RF_5" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="Roller_RF_6">
+    <inertial>
+      <origin
+        xyz="-6.38928882024103E-10 -4.33517610698431E-09 7.96774445033233E-08"
+        rpy="0 0 0" />
+      <mass
+        value="0.035258442930011" />
+      <inertia
+        ixx="1.0426073900259E-05"
+        ixy="-1.37727112531252E-15"
+        ixz="2.87273301374692E-11"
+        iyy="1.04260738797584E-05"
+        iyz="-1.51581958389486E-11"
+        izz="3.24617147943109E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Roller_RF_6.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.298039215686275 0.298039215686275 0.298039215686275 1" />
+      </material>
+    </visual>
+    
+  </link>
+  <joint
+    name="J_Roller_RF_6"
+    type="continuous">
+    <origin
+      xyz="-0.0350017856687347 0.035001785668734 0"
+      rpy="0 -0.785398163397459 -2.35619449019234" />
+    <parent
+      link="Wheel_RF" />
+    <child
+      link="Roller_RF_6" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="Roller_RF_7">
+    <inertial>
+      <origin
+        xyz="2.03665445341894E-08 -7.13063064150532E-09 -8.72457231460011E-08"
+        rpy="0 0 0" />
+      <mass
+        value="0.035258442930011" />
+      <inertia
+        ixx="1.04260733096708E-05"
+        ixy="1.54326280402773E-13"
+        ixz="2.0254296471793E-12"
+        iyy="1.04260736676434E-05"
+        iyz="3.23095488290615E-11"
+        izz="3.24617193132991E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Roller_RF_7.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.298039215686275 0.298039215686275 0.298039215686275 1" />
+      </material>
+    </visual>
+    
+  </link>
+  <joint
+    name="J_Roller_RF_7"
+    type="continuous">
+    <origin
+      xyz="0 0.0495 0"
+      rpy="0 -0.785398163397463 3.14159265358979" />
+    <parent
+      link="Wheel_RF" />
+    <child
+      link="Roller_RF_7" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="Roller_RF_8">
+    <inertial>
+      <origin
+        xyz="2.86524748371875E-10 3.53920168172372E-09 -5.47491038616066E-08"
+        rpy="0 0 0" />
+      <mass
+        value="0.0352584429300109" />
+      <inertia
+        ixx="1.04260755664592E-05"
+        ixy="-1.32125493068646E-15"
+        ixz="-1.2652516240161E-11"
+        iyy="1.04260755558221E-05"
+        iyz="3.00123139469367E-11"
+        izz="3.24617146993115E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Roller_RF_8.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.298039215686275 0.298039215686275 0.298039215686275 1" />
+      </material>
+    </visual>
+    
+  </link>
+  <joint
+    name="J_Roller_RF_8"
+    type="continuous">
+    <origin
+      xyz="0.0350017856687329 0.0350017856687334 0"
+      rpy="0 -0.785398163397459 2.35619449019235" />
+    <parent
+      link="Wheel_RF" />
+    <child
+      link="Roller_RF_8" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="Wheel_RR">
+    <inertial>
+      <origin
+        xyz="-3.68971720447753E-05 8.73176160257061E-06 -0.000155533212772396"
+        rpy="0 0 0" />
+      <mass
+        value="0.774041107399352" />
+      <inertia
+        ixx="0.000555071231306981"
+        ixy="2.13316469015245E-07"
+        ixz="2.7956366730985E-11"
+        iyy="0.000555928410599816"
+        iyz="-2.88355488444608E-10"
+        izz="0.000988906210952547" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Wheel_RR.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.898039215686275 0.917647058823529 0.929411764705882 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Wheel_RR.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="J_Wheel_RR"
+    type="continuous">
+    <origin
+      xyz="0.197 -0.243373703143013 -0.410500520826098"
+      rpy="1.5707963267949 0.0225283753887193 -1.57079632679472" />
+    <parent
+      link="Mobile_Base" />
+    <child
+      link="Wheel_RR" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="Roller_RR_1">
+    <inertial>
+      <origin
+        xyz="1.12114789674322E-10 -6.97872593047322E-11 -1.19170277257385E-08"
+        rpy="0 0 0" />
+      <mass
+        value="0.035258442930011" />
+      <inertia
+        ixx="1.04260769898083E-05"
+        ixy="6.06656908224351E-18"
+        ixz="3.08085320277639E-11"
+        iyy="1.04260769898007E-05"
+        iyz="1.0478225912599E-11"
+        izz="3.24617145901505E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Roller_RR_1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.298039215686275 0.298039215686275 0.298039215686275 1" />
+      </material>
+    </visual>
+    
+  </link>
+  <joint
+    name="J_Roller_RR_1"
+    type="continuous">
+    <origin
+      xyz="0.049500000000006 0 0"
+      rpy="0 -0.785398163397444 -1.57079632679489" />
+    <parent
+      link="Wheel_RR" />
+    <child
+      link="Roller_RR_1" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="Roller_RR_2">
+    <inertial>
+      <origin
+        xyz="0.0247500321227677 -0.0144981536896033 -0.0247498858505418"
+        rpy="0 0 0" />
+      <mass
+        value="0.0352584429300109" />
+      <inertia
+        ixx="1.02720859629879E-05"
+        ixy="-5.25736174296122E-07"
+        ixz="-8.97478853468163E-07"
+        iyy="8.63106664499607E-06"
+        iyz="-3.06422871372737E-06"
+        izz="5.19515582335274E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Roller_RR_2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.298039215686275 0.298039215686275 0.298039215686275 1" />
+      </material>
+    </visual>
+    
+  </link>
+  <joint
+    name="J_Roller_RR_2"
+    type="continuous">
+    <origin
+      xyz="0.049500000000006 0 0"
+      rpy="0 -0.785398163397444 -1.57079632679489" />
+    <parent
+      link="Wheel_RR" />
+    <child
+      link="Roller_RR_2" />
+    <axis
+      xyz="-0.146446609406728 -0.5 -0.853553390593274" />
+  </joint>
+  <link
+    name="Roller_RR_3">
+    <inertial>
+      <origin
+        xyz="1.14529011274733E-10 -1.43740908065126E-10 -1.19538481335724E-08"
+        rpy="0 0 0" />
+      <mass
+        value="0.035258442930011" />
+      <inertia
+        ixx="1.04260769893648E-05"
+        ixy="6.43047561220764E-18"
+        ixz="3.135428663036E-11"
+        iyy="1.04260769893486E-05"
+        iyz="-8.71091477927151E-12"
+        izz="3.24617145902362E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Roller_RR_3.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.298039215686275 0.298039215686275 0.298039215686275 1" />
+      </material>
+    </visual>
+    
+  </link>
+  <joint
+    name="J_Roller_RR_3"
+    type="continuous">
+    <origin
+      xyz="0 -0.0495000000000001 0"
+      rpy="0 -0.785398163397275 -3.14159265358962" />
+    <parent
+      link="Wheel_RR" />
+    <child
+      link="Roller_RR_3" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="Roller_RR_4">
+    <inertial>
+      <origin
+        xyz="2.76238532048723E-09 2.13770798285218E-09 -1.11114659334666E-07"
+        rpy="0 0 0" />
+      <mass
+        value="0.0352584429300108" />
+      <inertia
+        ixx="1.04260708684055E-05"
+        ixy="-4.05622394396635E-15"
+        ixz="1.24181842518424E-11"
+        iyy="1.04260708725038E-05"
+        iyz="3.01041157011414E-11"
+        izz="3.24617146788864E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Roller_RR_4.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.298039215686275 0.298039215686275 0.298039215686275 1" />
+      </material>
+    </visual>
+    
+  </link>
+  <joint
+    name="J_Roller_RR_4"
+    type="continuous">
+    <origin
+      xyz="-0.0350017856687443 -0.0350017856687639 0"
+      rpy="0 -0.785398163397327 2.35619449019265" />
+    <parent
+      link="Wheel_RR" />
+    <child
+      link="Roller_RR_4" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="Roller_RR_5">
+    <inertial>
+      <origin
+        xyz="4.96390428761373E-11 8.79210593218716E-12 8.75807198985612E-09"
+        rpy="0 0 0" />
+      <mass
+        value="0.0352584429300111" />
+      <inertia
+        ixx="1.04260770225584E-05"
+        ixy="-1.99762132698086E-18"
+        ixz="-1.85692606996194E-11"
+        iyy="1.04260770225577E-05"
+        iyz="2.6723573066859E-11"
+        izz="3.24617145900821E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Roller_RR_5.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.298039215686275 0.298039215686275 0.298039215686275 1" />
+      </material>
+    </visual>
+    
+  </link>
+  <joint
+    name="J_Roller_RR_5"
+    type="continuous">
+    <origin
+      xyz="-0.0495000000000206 0 0"
+      rpy="0 -0.78539816339745 1.57079632679524" />
+    <parent
+      link="Wheel_RR" />
+    <child
+      link="Roller_RR_5" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="Roller_RR_6">
+    <inertial>
+      <origin
+        xyz="-5.57324551786476E-09 2.04404754233778E-09 -1.28496821960589E-07"
+        rpy="0 0 0" />
+      <mass
+        value="0.0352584429300109" />
+      <inertia
+        ixx="1.04260687757173E-05"
+        ixy="7.73717502284936E-15"
+        ixz="-1.85253924061901E-11"
+        iyy="1.0426068800802E-05"
+        iyz="2.68437436203528E-11"
+        izz="3.24617148814881E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Roller_RR_6.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.298039215686275 0.298039215686275 0.298039215686275 1" />
+      </material>
+    </visual>
+    
+  </link>
+  <joint
+    name="J_Roller_RR_6"
+    type="continuous">
+    <origin
+      xyz="-0.0350017856687212 0.0350017856687237 0"
+      rpy="0 -0.785398163397572 0.78539816339774" />
+    <parent
+      link="Wheel_RR" />
+    <child
+      link="Roller_RR_6" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="Roller_RR_7">
+    <inertial>
+      <origin
+        xyz="1.18025478279549E-10 1.32408584097021E-10 1.20856666063762E-08"
+        rpy="0 0 0" />
+      <mass
+        value="0.0352584429300108" />
+      <inertia
+        ixx="1.04260769877755E-05"
+        ixy="-6.49989260921309E-18"
+        ixz="-3.19602978087345E-11"
+        iyy="1.0426076987761E-05"
+        iyz="-6.12441084700149E-12"
+        izz="3.24617145902205E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Roller_RR_7.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.298039215686275 0.298039215686275 0.298039215686275 1" />
+      </material>
+    </visual>
+    
+  </link>
+  <joint
+    name="J_Roller_RR_7"
+    type="continuous">
+    <origin
+      xyz="0 0.0494999999999669 0"
+      rpy="0 -0.78539816339762 0" />
+    <parent
+      link="Wheel_RR" />
+    <child
+      link="Roller_RR_7" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="Roller_RR_8">
+    <inertial>
+      <origin
+        xyz="-1.74573559219571E-08 -8.01624572277504E-10 9.90356089913824E-08"
+        rpy="0 0 0" />
+      <mass
+        value="0.035258442930011" />
+      <inertia
+        ixx="1.04260721421412E-05"
+        ixy="-2.24826665582047E-14"
+        ixz="5.61434170959108E-12"
+        iyy="1.04260724436141E-05"
+        iyz="-3.20575856409404E-11"
+        izz="3.24617176333256E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Roller_RR_8.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.298039215686275 0.298039215686275 0.298039215686275 1" />
+      </material>
+    </visual>
+    
+  </link>
+  <joint
+    name="J_Roller_RR_8"
+    type="continuous">
+    <origin
+      xyz="0.0350017856687396 0.0350017856687503 0"
+      rpy="0 -0.785398163397566 -0.785398163397389" />
+    <parent
+      link="Wheel_RR" />
+    <child
+      link="Roller_RR_8" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="Pin_Head_F">
+    <inertial>
+      <origin
+        xyz="5.79715675463888E-09 -3.31749339110843E-09 -0.0053966909824284"
+        rpy="0 0 0" />
+      <mass
+        value="0.402815862801581" />
+      <inertia
+        ixx="0.000833196466867663"
+        ixy="-1.99021997970921E-08"
+        ixz="-1.89086541626032E-10"
+        iyy="0.000833099897197821"
+        iyz="1.01041014589601E-10"
+        izz="3.49180806072697E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Pin_Head_F.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.898039215686275 0.917647058823529 0.929411764705882 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Pin_Head_F.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="J_Pin_Head_F"
+    type="prismatic">
+    <origin
+      xyz="-0.1012 0.125 0.06"
+      rpy="-1.5708 0 1.5708" />
+    <parent
+      link="Mobile_Base" />
+    <child
+      link="Pin_Head_F" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="0.2"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="Pin_Head_R">
+    <inertial>
+      <origin
+        xyz="-6.17058776297696E-09 2.55668453075231E-09 -0.00539669098242834"
+        rpy="0 0 0" />
+      <mass
+        value="0.402815862801581" />
+      <inertia
+        ixx="0.000833199918234933"
+        ixy="-7.13359815521494E-09"
+        ixz="2.00359336359181E-10"
+        iyy="0.000833096445830546"
+        iyz="-7.62833085185167E-11"
+        izz="3.49180806072696E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Pin_Head_R.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.898039215686275 0.917647058823529 0.929411764705882 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Pin_Head_R.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="J_Pin_Head_R"
+    type="prismatic">
+    <origin
+      xyz="0.10612 -0.125 0.06"
+      rpy="-1.5708 0 -1.5708" />
+    <parent
+      link="Mobile_Base" />
+    <child
+      link="Pin_Head_R" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="0.2"
+      effort="0"
+      velocity="0" />
+  </joint>
+</robot>
