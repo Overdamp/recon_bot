@@ -9,7 +9,7 @@ class SerialNode(Node):
         super().__init__('serial_node')
         
         # Open serial port
-        self.serial_port = serial.Serial('/dev/ttyUSB0', 115200, timeout=1)
+        self.serial_port = serial.Serial('/dev/ttyUSB_ESP32', 115200, timeout=1)
         
         # Create subscriber to the /joy topic
         self.subscription = self.create_subscription(Joy, '/joy', self.joy_callback, 10)

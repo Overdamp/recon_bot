@@ -110,9 +110,11 @@ class MecanumJoystickController(Node):
         if velocity >= 0:
         # Forward: map 0-1023 directly to Dynamixel's 0-1023
             velocity = velocity
-        else:
+        elif velocity <= 0:
         # Reverse: map -1023-0 to Dynamixel's 1024-2047
             velocity = 1024 + abs(velocity)
+        else:
+            velocity = 0
 
         self.packet_handler.write1ByteTxRx(self.port_handler, dxl_id, ADDR_GOAL_ACCELERATION, 10)
         # print(velocity, dxl_id)

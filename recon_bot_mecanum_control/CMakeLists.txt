@@ -26,6 +26,13 @@ scripts/test_motor.py
 scripts/mecanum_odometry.py
 scripts/read_motor.py
 
+scripts/a_joy_cmd_vel.py  
+scripts/a_motor_write.py
+scripts/a_motor_read.py   
+scripts/a_odometry_pub.py  
+scripts/a_square_drive_test.py
+scripts/a_motor_read_write.py
+
 DESTINATION lib/${PROJECT_NAME}
 )
 

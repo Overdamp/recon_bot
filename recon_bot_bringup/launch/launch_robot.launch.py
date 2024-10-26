@@ -25,7 +25,13 @@ def generate_launch_description():
     rsp = IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([os.path.join(
                     get_package_share_directory(package_name),'launch','rsp.launch.py'
-                )]), launch_arguments={'use_sim_time': 'false', 'use_ros2_control': 'true'}.items()
+                )])
+    )
+
+    rplidar_two = IncludeLaunchDescription(
+                PythonLaunchDescriptionSource([os.path.join(
+                    get_package_share_directory(package_name),'launch','rplidar_two.launch.py'
+                )])
     )
 
     # joystick = IncludeLaunchDescription(
@@ -106,10 +112,11 @@ def generate_launch_description():
 
     # Launch them all!
     return LaunchDescription([
+        rplidar_two,
         rsp,
         # joystick,
         twist_mux,
-        delayed_controller_manager,
-        delayed_diff_drive_spawner,
-        delayed_joint_broad_spawner
+        # delayed_controller_manager,
+        # delayed_diff_drive_spawner,
+        # delayed_joint_broad_spawner
     ])

@@ -177,7 +177,7 @@ class MecanumJoystickOdometryController(Node):
         odom_msg = Odometry()
         odom_msg.header.stamp = current_time.to_msg()
         odom_msg.header.frame_id = "odom"
-        odom_msg.child_frame_id = "base_link"
+        odom_msg.child_frame_id = "base_footprint"
         odom_msg.pose.pose.position.x = self.x
         odom_msg.pose.pose.position.y = self.y
         odom_quat = quaternion_from_euler(0, 0, self.theta)
@@ -197,7 +197,7 @@ class MecanumJoystickOdometryController(Node):
         transform = TransformStamped()
         transform.header.stamp = current_time.to_msg()
         transform.header.frame_id = "odom"
-        transform.child_frame_id = "base_link"
+        transform.child_frame_id = "base_footprint"
         transform.transform.translation.x = self.x
         transform.transform.translation.y = self.y
         transform.transform.rotation.x = odom_quat[0]

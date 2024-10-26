@@ -18,7 +18,7 @@ def generate_launch_description():
             namespace='front',  # Namespace for the front RPLIDAR
             output='screen',  # Print the output on the screen
             parameters=[{
-                'serial_port': '/dev/ttyUSB1',  # Front RPLIDAR connected here
+                'serial_port': '/dev/ttyUSB_RPLIDAR2',  # Front RPLIDAR connected here
                 'serial_baudrate': 115200,  # Baudrate for the RPLIDAR (could be 256000 for other models)
                 'frame_id': 'lidar_front_link',  # The frame ID for the front lidar
                 'inverted': False,  # Normal scanning direction
@@ -39,7 +39,7 @@ def generate_launch_description():
             namespace='back',  # Namespace for the back RPLIDAR
             output='screen',  # Print the output on the screen
             parameters=[{
-                'serial_port': '/dev/ttyUSB2',  # Back RPLIDAR connected here
+                'serial_port': '/dev/ttyUSB_RPLIDAR1',  # Back RPLIDAR connected here
                 'serial_baudrate': 115200,  # Baudrate for the RPLIDAR
                 'frame_id': 'lidar_back_link',  # The frame ID for the back lidar
                 'inverted': False,  # Normal scanning direction
@@ -65,10 +65,10 @@ def generate_launch_description():
         #     }]
         # ),
 
-        Node(
-            package='rviz2',
-            executable='rviz2',
-            output='screen',
-            arguments=['-d', [ThisLaunchFileDir(), '/../config/rplidar.rviz']],
-        )
+        # Node(
+        #     package='rviz2',
+        #     executable='rviz2',
+        #     output='screen',
+        #     arguments=['-d', [ThisLaunchFileDir(), '/../config/rplidar.rviz']],
+        # )
     ])

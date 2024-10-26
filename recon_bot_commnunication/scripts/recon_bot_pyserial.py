@@ -9,7 +9,7 @@ class SerialNode(Node):
         super().__init__('serial_node')
         
         # Open serial port
-        self.serial_port = serial.Serial('/dev/ttyUSB0', 115200, timeout=1)
+        self.serial_port = serial.Serial('/dev/ttyUSB1', 115200, timeout=1)
         
         # Timer to periodically send data
         self.timer = self.create_timer(1.0, self.timer_callback)
