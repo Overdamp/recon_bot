@@ -4,3 +4,6 @@
 [submodule "zed-ros2-wrapper"]
 	path = zed-ros2-wrapper
 	url = https://github.com/stereolabs/zed-ros2-wrapper.git
+[submodule "zed-ros2-examples"]
+	path = zed-ros2-examples
+	url = https://github.com/stereolabs/zed-ros2-examples.git
