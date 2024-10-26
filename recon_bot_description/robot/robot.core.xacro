@@ -5,6 +5,17 @@
      Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
      For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
   <xacro:include filename="$(find recon_bot_description)/robot/materials.xacro"/>
+
+  <link name="odom">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 3.14" />
+  </link>
+
+  <joint name="odom_to_basefootprint" type="fixed">
+    <parent link="odom"/>
+    <child link="base_footprint"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+  </joint>
+
   <link name="base_footprint">
     <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 3.14" />
   </link>
@@ -53,7 +64,7 @@
   <joint name="basefootprint_to_base" type="fixed">
     <parent link="base_footprint"/>
     <child link="Mobile_Base"/>
-    <origin rpy="0 0 0" xyz="0 0 0.4"/>
+    <origin rpy="0 0 0" xyz="0 0 0.48"/>
   </joint>
 
   <link

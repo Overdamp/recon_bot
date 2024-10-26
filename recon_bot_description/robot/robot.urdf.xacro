@@ -5,7 +5,7 @@
     <xacro:include filename="$(find recon_bot_description)/robot/robot.core.xacro"/>
     <xacro:include filename="$(find recon_bot_description)/robot/lidar.xacro"/>
 
-    Arguments for ZED Camera
+    <!-- Arguments for ZED Camera -->
     <xacro:arg name="camera_name" default="zed" />
     <xacro:arg name="camera_model" default="zed2i" />
     <xacro:arg name="use_zed_localization" default="true" />

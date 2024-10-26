@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(recon_bot_mecanum_control)
+project(recon_bot_navigation)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -18,28 +18,15 @@ ament_python_install_package(${PROJECT_NAME})
 # Install Python executables
 install(PROGRAMS
 
-scripts/recon_bot_joy_controller.py
-scripts/MobiControl.py
-scripts/mobility_node.py
-scripts/base_joy.py
-scripts/test_motor.py
-scripts/mecanum_odometry.py
-scripts/read_motor.py
-
-scripts/a_joy_cmd_vel.py  
-scripts/a_motor_write.py
-scripts/a_motor_read.py   
-scripts/a_odometry_pub.py  
-scripts/a_square_drive_test.py
-scripts/a_motor_read_write.py
-
 DESTINATION lib/${PROJECT_NAME}
 )
 
 ################ INSTALL LAUNCH, ETC #################
 install(DIRECTORY
+  config
   launch
-  scripts
+  maps
+  rviz
   DESTINATION share/${PROJECT_NAME})
 
 ament_package()

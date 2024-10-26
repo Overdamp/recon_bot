@@ -4,7 +4,7 @@
     <joint name="laser_joint1" type="fixed">
         <parent link="Mobile_Base"/>
         <child link="lidar_front_link"/>
-        <origin xyz="-0.222 0.25 -0.230" rpy="0 0 0"/>
+        <origin xyz="-0.222 0.25 -0.230" rpy="3.14 0 0"/>
     </joint>
 
     <link name="lidar_front_link">
@@ -32,7 +32,7 @@
     <joint name="laser_joint2" type="fixed">
         <parent link="Mobile_Base"/>
         <child link="lidar_back_link"/>
-        <origin xyz="0.222 -0.25 -0.230" rpy="0 0 0"/>
+        <origin xyz="0.222 -0.25 -0.230" rpy="3.14 0 0"/>
     </joint>
 
     <link name="lidar_back_link">
