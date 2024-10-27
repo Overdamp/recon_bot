@@ -29,7 +29,7 @@
       <joint name="$(arg camera_name)_joint" type="fixed">
         <parent link="Mobile_Base"/> <!-- Ensure Mobile_Base is defined in the included files -->
         <child link="$(arg camera_name)_camera_link"/> <!-- Ensure zed_camera_link is defined in the ZED macro -->
-        <origin xyz="0 0.265 -0.085" rpy="0 0 1.57"/>
+        <origin xyz="0.265 0 -0.085" rpy="0 0 0"/>
       </joint>
     </xacro:if>
     
