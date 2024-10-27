@@ -5,9 +5,8 @@ from rclpy.node import Node
 import cv2
 import numpy as np
 from cv_bridge import CvBridge
-from sensor_msgs.msg import Image
+from sensor_msgs.msg import Image, CameraInfo
 from geometry_msgs.msg import PoseStamped
-import yaml
 from tf2_ros import TransformBroadcaster
 from geometry_msgs.msg import TransformStamped
 import tf_transformations
@@ -22,6 +21,14 @@ class ArucoMarkerNode(Node):
             Image,
             '/zed/zed_node/left/image_rect_color',
             self.image_callback,
+            10
+        )
+
+        # Create a subscriber to get camera info (for calibration data)
+        self.camera_info_sub = self.create_subscription(
+            CameraInfo,
+            '/zed/zed_node/left/camera_info',
+            self.camera_info_callback,
             10
         )
 
@@ -40,46 +47,42 @@ class ArucoMarkerNode(Node):
         self.aruco_dict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_6X6_100)
         self.parameters = cv2.aruco.DetectorParameters_create()
 
-
-        # Load camera calibration parameters from file
-        with open('/home/cobot/Ros2_directory/recon_ws/src/recon_bot_aruco_pose_estimator/config/calibration_matrix.yaml', 'r') as file:
-            calibration_data = yaml.safe_load(file)
-            self.camera_matrix = np.array(calibration_data['camera_matrix'])
-            self.dist_coeffs = np.array(calibration_data.get('dist_coefficients', np.zeros((1, 5))))
+        # Variables to store camera calibration data
+        self.camera_matrix = None
+        self.dist_coeffs = None
 
         # Frame skip count to reduce publish frequency
         self.frame_skip = 3
         self.frame_count = 0
 
+    def camera_info_callback(self, msg):
+        """Callback to store camera calibration data."""
+        self.camera_matrix = np.array(msg.k).reshape((3, 3))
+        self.dist_coeffs = np.array(msg.d)
+
     def image_callback(self, msg):
         # Skip frames to reduce the load on the system
         self.frame_count += 1
-        if self.frame_count % self.frame_skip != 0:
+        if self.frame_count % self.frame_skip != 0 or self.camera_matrix is None or self.dist_coeffs is None:
             return
 
         # Convert the ROS2 Image message to an OpenCV image
         frame = self.bridge.imgmsg_to_cv2(msg, 'bgr8')
-        print(frame)
+
         # Detect the markers in the frame
         corners, ids, _ = cv2.aruco.detectMarkers(frame, self.aruco_dict, parameters=self.parameters)
 
         if ids is not None:
-            print("Detected")
             # Estimate pose of each marker
-            rvecs, tvecs, _ = cv2.aruco.estimatePoseSingleMarkers(corners, 0.05, self.camera_matrix, self.dist_coeffs)
+            marker_size = 0.1  # ขนาดของ Aruco marker คือ 10 cm หรือ 0.1 เมตร
+            rvecs, tvecs, _ = cv2.aruco.estimatePoseSingleMarkers(corners, marker_size, self.camera_matrix, self.dist_coeffs)
 
             for i, marker_id in enumerate(ids):
-                print(f"arUco {marker_id[0]} found")
                 rvec, tvec = rvecs[i][0], tvecs[i][0]
 
                 # Draw axis on the marker for visualization
                 cv2.aruco.drawDetectedMarkers(frame, corners)
                 cv2.drawFrameAxes(frame, self.camera_matrix, self.dist_coeffs, rvec, tvec, 0.1)
-
-                # Draw the coordinates on the marker
-                position_str = f"x: {tvec[0]:.2f}, y: {tvec[1]:.2f}, z: {tvec[2]:.2f}"
-                corner = corners[i][0][0]  # Top-left corner of the marker
-                cv2.putText(frame, position_str, (int(corner[0]), int(corner[1]) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
                 # Convert rotation vector to a rotation matrix
                 rotation_matrix, _ = cv2.Rodrigues(rvec)
@@ -87,15 +90,25 @@ class ArucoMarkerNode(Node):
                 # Convert rotation matrix to Euler angles
                 euler_angles = tf_transformations.euler_from_matrix(rotation_matrix, 'rxyz')
 
-                # Adjust Euler angles if needed (for example, correcting axis alignment)
+                # Adjust Euler angles (correcting axis alignment)
                 adjusted_euler = (
-                    euler_angles[0],              # Keep roll the same
-                    euler_angles[1],
-                    euler_angles[2]               # Keep yaw the same
+                    euler_angles[0],  # Roll (กลับทิศทางแกน X)
+                    -euler_angles[1],   # Pitch (แกน Y)
+                    -euler_angles[2]   # Yaw (กลับทิศทางแกน Z)
                 )
 
                 # Convert adjusted Euler angles back to a rotation matrix
                 adjusted_rotation_matrix = tf_transformations.euler_matrix(*adjusted_euler, 'rxyz')[:3, :3]
+
+                # Optional: Apply additional rotation (180 degrees on Z-axis if needed)
+                # Apply additional rotation to fix X and Y alignment
+                rotation_matrix_x = tf_transformations.euler_matrix(np.pi, 0, 0, 'rxyz')[:3, :3]  # Rotate 180 degrees around Y-axis
+
+                # Apply the rotations in sequence: Z rotation first, then Y rotation
+                adjusted_rotation_matrix = np.dot(rotation_matrix_x, adjusted_rotation_matrix)
+
+                # Convert adjusted rotation matrix to quaternion
+                quaternion = self.rotation_matrix_to_quaternion(adjusted_rotation_matrix)
 
                 # Create PoseStamped message for ROS2
                 pose_msg = PoseStamped()
@@ -103,17 +116,15 @@ class ArucoMarkerNode(Node):
                 pose_msg.header.frame_id = 'zed_left_camera_frame'
 
                 # Set the position
-                pose_msg.pose.position.x = tvec[0]
-                pose_msg.pose.position.y = tvec[1]
-                pose_msg.pose.position.z = tvec[2]
+                pose_msg.pose.position.x = tvec[2]
+                pose_msg.pose.position.y = -tvec[0]
+                pose_msg.pose.position.z = -tvec[1]
 
-                # Convert adjusted rotation matrix to quaternion
-                quaternion = self.rotation_matrix_to_quaternion(adjusted_rotation_matrix)
+                # Set the orientation
                 pose_msg.pose.orientation.x = quaternion[0]
                 pose_msg.pose.orientation.y = quaternion[1]
                 pose_msg.pose.orientation.z = quaternion[2]
                 pose_msg.pose.orientation.w = quaternion[3]
-
                 # Publish the pose to rviz2
                 self.publisher.publish(pose_msg)
 
@@ -122,9 +133,9 @@ class ArucoMarkerNode(Node):
                 transform.header.stamp = self.get_clock().now().to_msg()
                 transform.header.frame_id = 'zed_left_camera_frame'
                 transform.child_frame_id = f'aruco_marker_{marker_id[0]}'
-                transform.transform.translation.x = tvec[0]
-                transform.transform.translation.y = tvec[1]
-                transform.transform.translation.z = tvec[2]
+                transform.transform.translation.x = tvec[2]
+                transform.transform.translation.y = -tvec[0]
+                transform.transform.translation.z = -tvec[1]
                 transform.transform.rotation.x = quaternion[0]
                 transform.transform.rotation.y = quaternion[1]
                 transform.transform.rotation.z = quaternion[2]
