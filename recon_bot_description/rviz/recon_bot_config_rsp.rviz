@@ -29,7 +29,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: LaserScan
+    SyncSource: ""
 Visualization Manager:
   Class: ""
   Displays:
@@ -74,7 +74,7 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        Pin_Head_F:
+        Pin_Head_L:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -322,7 +322,7 @@ Visualization Manager:
         All Enabled: true
         Mobile_Base:
           Value: true
-        Pin_Head_F:
+        Pin_Head_L:
           Value: true
         Pin_Head_R:
           Value: true
@@ -398,6 +398,8 @@ Visualization Manager:
           Value: true
         Wheel_RR:
           Value: true
+        aruco_marker_2:
+          Value: true
         base_footprint:
           Value: true
         lidar_back_link:
@@ -429,7 +431,7 @@ Visualization Manager:
         odom:
           base_footprint:
             Mobile_Base:
-              Pin_Head_F:
+              Pin_Head_L:
                 {}
               Pin_Head_R:
                 {}
@@ -508,6 +510,8 @@ Visualization Manager:
               zed_camera_link:
                 zed_camera_center:
                   zed_left_camera_frame:
+                    aruco_marker_2:
+                      {}
                     zed_imu_link:
                       {}
                     zed_left_camera_optical_frame:
@@ -660,10 +664,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.0353977680206299
+      Pitch: 0.525397777557373
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 0.7053980827331543
+      Yaw: 2.415398359298706
     Saved: ~
 Window Geometry:
   Displays:

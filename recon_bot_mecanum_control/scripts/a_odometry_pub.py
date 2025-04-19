@@ -39,7 +39,7 @@ class OdometryPublisher(Node):
         try:
             speed_fl, speed_fr, speed_rl, speed_rr = joint_state_msg.velocity
         except Exception as e:
-            self.get_logger().error(f"Error extracting wheel speeds: {e}")
+            #self.get_logger().error(f"Error extracting wheel speeds: {e}")
             return
 
         # Convert the motor speeds from Dynamixel units to rad/s
@@ -49,7 +49,7 @@ class OdometryPublisher(Node):
         speed_rr_rad_s = self.convert_dynamixel_speed_to_radians(speed_rr*-1)
 
         # Debug: Log wheel speeds after conversion
-        self.get_logger().info(f"Wheel Speeds (rad/s): FL={speed_fl_rad_s}, FR={speed_fr_rad_s}, RL={speed_rl_rad_s}, RR={speed_rr_rad_s}")
+        #self.get_logger().info(f"Wheel Speeds (rad/s): FL={speed_fl_rad_s}, FR={speed_fr_rad_s}, RL={speed_rl_rad_s}, RR={speed_rr_rad_s}")
 
         # Compute body velocities using inverse kinematics for mecanum wheels
         current_time = self.get_clock().now()
@@ -71,7 +71,7 @@ class OdometryPublisher(Node):
         self.theta += delta_theta
 
         # Debug: Log position updates
-        self.get_logger().info(f"Updated Odometry: x={self.x}, y={self.y}, theta={self.theta}")
+       # self.get_logger().info(f"Updated Odometry: x={self.x}, y={self.y}, theta={self.theta}")
 
         # Publish odometry
         self.publish_odometry()

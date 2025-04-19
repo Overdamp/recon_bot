@@ -20,6 +20,7 @@ install(PROGRAMS
 
 scripts/recon_bot_pyserial.py
 scripts/joy_pyserial.py
+scripts/gpio_control.py
 
 DESTINATION lib/${PROJECT_NAME}
 )
