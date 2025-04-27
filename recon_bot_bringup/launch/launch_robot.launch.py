@@ -21,7 +21,6 @@ def generate_launch_description():
     # !!! MAKE SURE YOU SET THE PACKAGE NAME CORRECTLY !!!
 
     package_name='recon_bot_bringup' #<--- CHANGE ME
-    package_slam_name='recon_bot_slam' #<--- CHANGE ME
 
     rsp = IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([os.path.join(
@@ -32,12 +31,6 @@ def generate_launch_description():
     rplidar_two = IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([os.path.join(
                     get_package_share_directory(package_name),'launch','rplidar_two.launch.py'
-                )])
-    )
-
-    rplidar_merge = IncludeLaunchDescription(
-                PythonLaunchDescriptionSource([os.path.join(
-                    get_package_share_directory(package_slam_name),'launch','lidar_merge.py'
                 )])
     )
 
@@ -96,6 +89,11 @@ def generate_launch_description():
             target_action=controller_manager,
             on_start=[joint_broad_spawner],
         )
+    )
+
+    rplidar_merge = Node(
+        package="recon_bot_slam",
+        executable="lidar_merge.py"
     )
 
 
