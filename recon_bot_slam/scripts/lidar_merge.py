@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import LaserScan
@@ -34,9 +35,13 @@ class LaserScanMerger(Node):
         # Timer for merging
         self.timer = self.create_timer(0.05, self.merge_scans)  # 20 Hz merge rate
 
-        # Define LiDAR offsets relative to base_link (example values)
-        self.front_offset = (0.2, 0.0, 0.0)  # (x, y, theta in radians)
-        self.rear_offset = (-0.2, 0.0, math.pi)  # (x, y, theta in radians)
+        # Define LiDAR offsets relative to base_link (ปรับตามการติดตั้งจริง)
+        self.front_offset = (0.2, 0.22, -1.57)  # 180 degrees for upside-down
+        self.rear_offset = (-0.2, -0.22, -1.57)  # 180 degrees for upside-down
+
+        # Specify if the LiDAR is mounted upside down
+        self.front_upside_down = True
+        self.rear_upside_down = True
 
     def front_callback(self, msg):
         self.front_scan = msg
@@ -44,8 +49,11 @@ class LaserScanMerger(Node):
     def rear_callback(self, msg):
         self.rear_scan = msg
 
-    def transform_point(self, r, angle, offset):
-        """Transform a single point with given offset."""
+    def transform_point(self, r, angle, offset, upside_down=False):
+        """Transform a single point with given offset and optional upside down correction."""
+        if upside_down:
+            angle = -angle  # พลิกมุมสำหรับ LiDAR ที่คว่ำ
+
         x = r * math.cos(angle)
         y = r * math.sin(angle)
 
@@ -69,7 +77,7 @@ class LaserScanMerger(Node):
         angle = self.front_scan.angle_min
         for r in self.front_scan.ranges:
             if self.front_scan.range_min < r < self.front_scan.range_max:
-                x, y = self.transform_point(r, angle, self.front_offset)
+                x, y = self.transform_point(r, angle, self.front_offset, self.front_upside_down)
                 points_x.append(x)
                 points_y.append(y)
             angle += self.front_scan.angle_increment
@@ -78,15 +86,15 @@ class LaserScanMerger(Node):
         angle = self.rear_scan.angle_min
         for r in self.rear_scan.ranges:
             if self.rear_scan.range_min < r < self.rear_scan.range_max:
-                x, y = self.transform_point(r, angle, self.rear_offset)
+                x, y = self.transform_point(r, angle, self.rear_offset, self.rear_upside_down)
                 points_x.append(x)
                 points_y.append(y)
             angle += self.rear_scan.angle_increment
 
         # Convert merged points back into LaserScan
-        num_points = 360  # Resolution of output scan (adjustable)
-        angle_min = -math.pi  # Start from -180 degrees
-        angle_max = math.pi   # End at +180 degrees
+        num_points = 360
+        angle_min = -math.pi
+        angle_max = math.pi
         angle_increment = (angle_max - angle_min) / num_points
 
         merged_ranges = [float('inf')] * num_points
@@ -105,7 +113,7 @@ class LaserScanMerger(Node):
         # Create merged scan message
         merged_scan = LaserScan()
         merged_scan.header.stamp = self.get_clock().now().to_msg()
-        merged_scan.header.frame_id = 'base_link'
+        merged_scan.header.frame_id = 'Mobile_Base'
         merged_scan.angle_min = angle_min
         merged_scan.angle_max = angle_max
         merged_scan.angle_increment = angle_increment
@@ -116,7 +124,6 @@ class LaserScanMerger(Node):
         merged_scan.ranges = merged_ranges
 
         self.pub_merged.publish(merged_scan)
-
 
 def main(args=None):
     rclpy.init(args=args)

@@ -32,7 +32,7 @@
     <joint name="laser_joint2" type="fixed">
         <parent link="Mobile_Base"/>
         <child link="lidar_back_link"/>
-        <origin xyz="-0.222 -0.25 -0.230" rpy="0 3.13 1.57"/>
+        <origin xyz="-0.222 -0.25 -0.230" rpy="0 3.14 1.57"/>
     </joint>
 
     <link name="lidar_back_link">
