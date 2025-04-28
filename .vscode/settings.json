@@ -51,5 +51,5 @@
         "/opt/ros/humble/lib/python3.10/site-packages",
         "/opt/ros/humble/local/lib/python3.10/dist-packages"
     ],
-    "cmake.sourceDirectory": "/home/cobot/Ros2_directory/recon_ws/src/recon_bot_aruco_pose_estimator"
+    "cmake.sourceDirectory": "/home/fiborobotlab/Ros2_directoy/recon_ws/src/recon_bot_aruco_pose_estimator"
 }

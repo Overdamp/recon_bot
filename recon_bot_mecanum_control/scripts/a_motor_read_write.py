@@ -205,6 +205,7 @@ class MotorReadWrite(Node):
         
         # Set the header timestamp
         joint_state_msg.header.stamp = self.get_clock().now().to_msg()
+        joint_state_msg.name = ['wheel_LF', 'wheel_RF', 'wheel_LR', 'wheel_RR']
 
         # Set the velocities for each joint
         joint_state_msg.velocity = [

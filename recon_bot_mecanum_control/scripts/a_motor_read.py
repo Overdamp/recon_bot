@@ -30,13 +30,25 @@ class MotorReader(Node):
 
     def read_motor_speeds(self):
         # Read motor speeds from all motors
-        speed_fl = self.read_motor_speed(DXL_ID_FL)
-        speed_fr = self.read_motor_speed(DXL_ID_FR)
-        speed_rl = self.read_motor_speed(DXL_ID_RL)
-        speed_rr = self.read_motor_speed(DXL_ID_RR)
+        speed_fl, pos_fl = self.read_motor_speed(DXL_ID_FL)
+        speed_fr, pos_fr = self.read_motor_speed(DXL_ID_FR)
+        speed_rl, pos_rl = self.read_motor_speed(DXL_ID_RL)
+        speed_rr, pos_rr = self.read_motor_speed(DXL_ID_RR)
 
         # Convert the motor speeds to floats and create JointState message
         joint_state_msg = JointState()
+        joint_state_msg.name = [
+        "wheel_LF",
+        "wheel_RF",
+        "wheel_LR",
+        "wheel_RR"
+    ]
+        joint_state_msg.position = [
+        float(pos_fl),
+        float(pos_fr),
+        float(pos_rl),
+        float(pos_rr)
+    ]
         # Ensure that the motor speeds are floats and handle cases where they may be invalid
         joint_state_msg.velocity = [float(speed_fl) if speed_fl is not None else 0.0,
                                     float(speed_fr) if speed_fr is not None else 0.0,

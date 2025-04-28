@@ -35,18 +35,27 @@ def generate_launch_description():
         remappings=[('/cmd_vel_out', '/mecanum_cont/cmd_vel_unstamped')]
     )
 
-    # SLAM Toolbox node
-    slam_toolbox = Node(
-        package="slam_toolbox",
-        executable="online_async_launch",  # เลือกโหมดที่คุณต้องการใช้
-        name="slam_toolbox",
-        parameters=[os.path.join(get_package_share_directory(package_name), 'config', 'slam_toolbox.yaml')],
-        remappings=[('/scan', '/scan_merge')]  # เปลี่ยนตาม topic ของ lidar ที่คุณใช้
+    slam_toolbox_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(
+                get_package_share_directory('slam_toolbox'),
+                'launch',
+                'online_async_launch.py'
+            )
+        ),
+        launch_arguments={
+            'params_file': os.path.join(
+                get_package_share_directory('recon_bot_slam'),  # <--- ใช้ path ของคุณ
+                'config',
+                'mapper_params_online_async.yaml'
+            ),
+            'use_sim_time': 'false'
+        }.items()
     )
 
     # Additional nodes for lidar filtering, motor control, odometry, and joystick control
     lidar_filtered_node = Node(
-        package="recon_bot_slam_toolbox",
+        package="recon_bot_slam",
         executable="lidar_merge.py",
     )
 
@@ -76,7 +85,7 @@ def generate_launch_description():
         rplidar_two,
         rsp,
         twist_mux,
-        slam_toolbox,  # SLAM toolbox
+        slam_toolbox_launch,  # SLAM toolbox
         lidar_filtered_node,  # Lidar filtering node
         motor_control_node,  # Motor control node
         odometry_node,  # Odometry publishing node
