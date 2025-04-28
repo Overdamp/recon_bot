@@ -38,9 +38,16 @@ def generate_launch_description():
         ]
     )
 
+    # Joystick node
+    joy_node = Node(
+        package="joy",
+        executable="joy_node"
+    )
+
     # Launch Description
     launch_description = LaunchDescription([
-        delayed_rviz
+        delayed_rviz,
+        joy_node,
     ])
 
     return launch_description

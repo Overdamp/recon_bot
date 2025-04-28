@@ -41,13 +41,13 @@ def generate_launch_description():
         executable="sync_slam_toolbox_node",  # เลือกโหมดที่คุณต้องการใช้
         name="slam_toolbox",
         parameters=[os.path.join(get_package_share_directory(package_name), 'config', 'slam_toolbox.yaml')],
-        remappings=[('/scan', '/filtered_front_scan')]  # เปลี่ยนตาม topic ของ lidar ที่คุณใช้
+        remappings=[('/scan', '/scan_merge')]  # เปลี่ยนตาม topic ของ lidar ที่คุณใช้
     )
 
     # Additional nodes for lidar filtering, motor control, odometry, and joystick control
     lidar_filtered_node = Node(
-        package="rplidar_ros",
-        executable="lidar_filtered.py"
+        package="recon_bot_slam_toolbox",
+        executable="lidar_merge.py",
     )
 
     motor_control_node = Node(
