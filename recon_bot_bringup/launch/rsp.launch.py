@@ -81,7 +81,7 @@ def generate_launch_description():
     launch_description = LaunchDescription([
         zed_camera_launch,
         robot_state_publisher,
-        delayed_joint_state_publisher,
+        # delayed_joint_state_publisher,
         # delayed_rviz
     ])
 
