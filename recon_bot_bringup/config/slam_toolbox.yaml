@@ -11,7 +11,7 @@ slam_toolbox:
     odom_frame: odom  # โครงสร้างของคุณเริ่มต้นที่ odom
     map_frame: map
     base_frame: base_footprint  # โครงสร้างของคุณมี base_footprint
-    scan_topic: /filtered_front_scan  # เปลี่ยนตาม topic ของ Lidar
+    scan_topic: /scan_merged  # เปลี่ยนตาม topic ของ Lidar
     
     # Other SLAM parameters
     use_map_saver: true

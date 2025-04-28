@@ -38,7 +38,7 @@ def generate_launch_description():
     # SLAM Toolbox node
     slam_toolbox = Node(
         package="slam_toolbox",
-        executable="sync_slam_toolbox_node",  # เลือกโหมดที่คุณต้องการใช้
+        executable="online_async_launch",  # เลือกโหมดที่คุณต้องการใช้
         name="slam_toolbox",
         parameters=[os.path.join(get_package_share_directory(package_name), 'config', 'slam_toolbox.yaml')],
         remappings=[('/scan', '/scan_merge')]  # เปลี่ยนตาม topic ของ lidar ที่คุณใช้
