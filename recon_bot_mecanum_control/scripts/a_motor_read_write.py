@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+
+# --- Import Libraries ---
 import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
@@ -7,30 +9,21 @@ from dynamixel_sdk import *
 from dxl_address import *
 import math
 
-DXL_IDS = {
-    'FL': 4,
-    'FR': 3,
-    'RL': 2,
-    'RR': 1,
-}
+# --- Motor Configuration ---
+DXL_IDS = { 'FL': 4, 'FR': 3, 'RL': 2, 'RR': 1 }
+DIR = { 'FL': 1, 'FR': -1, 'RL': 1, 'RR': -1 }
 
-DIR = {
-    'FL': 1,
-    'FR': -1,
-    'RL': 1,
-    'RR': -1,
-}
-
-# Constants
+# --- Robot Physical Constants ---
 WHEEL_RADIUS = 0.062
 Lx = 0.245
 Ly = 0.2
 VELOCITY_LIMIT = 300
 TORQUE_ENABLE = 1
 TORQUE_DISABLE = 0
-max_rpm = 4.714  # Dynamixel maximum RPM (if set limit)
-TICKS_PER_REVOLUTION = 4096  # MX-106 encoder resolution
+max_rpm = 4.714
+TICKS_PER_REVOLUTION = 4096
 
+# --- Motor Controller Node ---
 class MotorController(Node):
     def __init__(self):
         super().__init__('motor_controller')
@@ -41,10 +34,7 @@ class MotorController(Node):
         self.port_handler = PortHandler(DEVICENAME)
         self.packet_handler = PacketHandler(PROTOCOL_VERSION)
         self.sync_write = GroupSyncWrite(self.port_handler, self.packet_handler, ADDR_MX_MOVING_SPEED, 2)
-        self.sync_read = GroupSyncRead(self.port_handler,
-                                    self.packet_handler,
-                                    ADDR_MX_PRESENT_SPEED,
-                                    LEN_MX_PRESENT_SPEED)
+        self.sync_read = GroupSyncRead(self.port_handler, self.packet_handler, ADDR_MX_PRESENT_SPEED, LEN_MX_PRESENT_SPEED)
 
         if not self.port_handler.openPort():
             self.get_logger().fatal('Failed to open port')
@@ -92,23 +82,21 @@ class MotorController(Node):
             param = [DXL_LOBYTE(value), DXL_HIBYTE(value)]
             self.sync_write.addParam(dxl_id, param)
 
-        self.sync_write.txPacket()
+        # Send all velocities
+        result = self.sync_write.txPacket()
+        if result != COMM_SUCCESS:
+            self.get_logger().error(f"SyncWrite error: {self.packet_handler.getTxRxResult(result)}")
 
     def read_publish_joint_states(self):
         now = self.get_clock().now()
         dt = (now - self.last_time).nanoseconds * 1e-9
         self.last_time = now
 
-        if self.sync_read.txRxPacket() != COMM_SUCCESS:
-            self.get_logger().error('Failed to sync read')
-            return
-        
+        # Only 1 sync read
         result = self.sync_read.txRxPacket()
         if result != COMM_SUCCESS:
-                self.get_logger().error(
-                    f"SyncRead error: {self.packet_handler.getTxRxResult(result)}"
-                )
-                return
+            self.get_logger().error(f"SyncRead error: {self.packet_handler.getTxRxResult(result)}")
+            return
 
         msg = JointState()
         msg.header.stamp = now.to_msg()
@@ -118,17 +106,14 @@ class MotorController(Node):
         msg.position = []
 
         for name, dxl_id in DXL_IDS.items():
-            if self.sync_read.isAvailable(dxl_id, ADDR_MX_PRESENT_SPEED, 2):
-                raw_speed = self.sync_read.getData(dxl_id,
-                                        ADDR_MX_PRESENT_SPEED,
-                                        LEN_MX_PRESENT_SPEED)
-                # Convert Dynamixel speed to rad/s
+            if self.sync_read.isAvailable(dxl_id, ADDR_MX_PRESENT_SPEED, LEN_MX_PRESENT_SPEED):
+                raw_speed = self.sync_read.getData(dxl_id, ADDR_MX_PRESENT_SPEED, LEN_MX_PRESENT_SPEED)
+
                 if raw_speed > 1023:
                     raw_speed = -(raw_speed - 1024)
                 wheel_rpm = raw_speed * max_rpm / VELOCITY_LIMIT
                 wheel_rad_per_sec = wheel_rpm * 2 * math.pi / 60.0
 
-                # Integrate position
                 self.last_positions[name] += wheel_rad_per_sec * dt
 
                 msg.velocity.append(wheel_rad_per_sec)
@@ -144,7 +129,7 @@ class MotorController(Node):
             self.packet_handler.write1ByteTxRx(self.port_handler, dxl_id, ADDR_MX_TORQUE_ENABLE, TORQUE_DISABLE)
         self.port_handler.closePort()
 
-
+# --- Main program ---
 def main(args=None):
     rclpy.init(args=args)
     node = MotorController()
@@ -156,7 +141,6 @@ def main(args=None):
         node.destroy()
         node.destroy_node()
         rclpy.shutdown()
-
 
 if __name__ == '__main__':
     main()
