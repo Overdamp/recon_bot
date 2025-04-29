@@ -177,7 +177,7 @@ class MotorReadWrite(Node):
             velocity_value = 0
 
         # Log the velocity being commanded to the motor
-        self.get_logger().info(f"Setting motor {dxl_id} to velocity: {velocity_value} (original: {velocity})")
+        # self.get_logger().info(f"Setting motor {dxl_id} to velocity: {velocity_value} (original: {velocity})")
 
 
         # Set the acceleration limit for smooth operation
@@ -205,7 +205,8 @@ class MotorReadWrite(Node):
         
         # Set the header timestamp
         joint_state_msg.header.stamp = self.get_clock().now().to_msg()
-        joint_state_msg.name = ['wheel_LF', 'wheel_RF', 'wheel_LR', 'wheel_RR']
+        joint_state_msg.header.frame_id = "Mobile_Base"   # <--- ใส่ตรงนี้สำคัญ!
+        joint_state_msg.name = ['Wheel_LF', 'Wheel_RF', 'Wheel_LR', 'Wheel_RR']
 
         # Set the velocities for each joint
         joint_state_msg.velocity = [

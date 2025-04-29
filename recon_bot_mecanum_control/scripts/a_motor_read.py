@@ -37,11 +37,13 @@ class MotorReader(Node):
 
         # Convert the motor speeds to floats and create JointState message
         joint_state_msg = JointState()
+        joint_state_msg.header.stamp = self.get_clock().now().to_msg()
+        joint_state_msg.header.frame_id = "Mobile_Base" 
         joint_state_msg.name = [
-        "wheel_LF",
-        "wheel_RF",
-        "wheel_LR",
-        "wheel_RR"
+        "Wheel_LF",
+        "Wheel_RF",
+        "Wheel_LR",
+        "Wheel_RR"
     ]
         joint_state_msg.position = [
         float(pos_fl),
