@@ -41,7 +41,10 @@ class MotorController(Node):
         self.port_handler = PortHandler(DEVICENAME)
         self.packet_handler = PacketHandler(PROTOCOL_VERSION)
         self.sync_write = GroupSyncWrite(self.port_handler, self.packet_handler, ADDR_MX_MOVING_SPEED, 2)
-        self.sync_read = GroupSyncRead(self.port_handler, self.packet_handler, ADDR_MX_PRESENT_SPEED, 2)
+        self.sync_read = GroupSyncRead(self.port_handler,
+                                    self.packet_handler,
+                                    ADDR_MX_PRESENT_SPEED,
+                                    LEN_MX_PRESENT_SPEED)
 
         if not self.port_handler.openPort():
             self.get_logger().fatal('Failed to open port')
@@ -99,6 +102,13 @@ class MotorController(Node):
         if self.sync_read.txRxPacket() != COMM_SUCCESS:
             self.get_logger().error('Failed to sync read')
             return
+        
+        result = self.sync_read.txRxPacket()
+        if result != COMM_SUCCESS:
+                self.get_logger().error(
+                    f"SyncRead error: {self.packet_handler.getTxRxResult(result)}"
+                )
+                return
 
         msg = JointState()
         msg.header.stamp = now.to_msg()
@@ -109,8 +119,9 @@ class MotorController(Node):
 
         for name, dxl_id in DXL_IDS.items():
             if self.sync_read.isAvailable(dxl_id, ADDR_MX_PRESENT_SPEED, 2):
-                raw_speed = self.sync_read.getData(dxl_id, ADDR_MX_PRESENT_SPEED, 2)
-
+                raw_speed = self.sync_read.getData(dxl_id,
+                                        ADDR_MX_PRESENT_SPEED,
+                                        LEN_MX_PRESENT_SPEED)
                 # Convert Dynamixel speed to rad/s
                 if raw_speed > 1023:
                     raw_speed = -(raw_speed - 1024)

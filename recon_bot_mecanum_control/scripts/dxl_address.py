@@ -70,4 +70,4 @@ ADDR_GOAL_TORQUE               = 71
 ADDR_GOAL_ACCELERATION         = 73
 
 # Protocol version
-PROTOCOL_VERSION               = 1.0               # See which protocol version is used in the Dynamixel
+PROTOCOL_VERSION               = 2.0               # See which protocol version is used in the Dynamixel
