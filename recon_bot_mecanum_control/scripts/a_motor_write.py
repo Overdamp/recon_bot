@@ -1,33 +1,47 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
+
+# --- Import Libraries ---
 import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
-from dynamixel_sdk import *  # Use Dynamixel SDK library
+from dynamixel_sdk import *
 from dxl_address import *
+import math
 
-# Motor constants for a Mecanum drive
-DXL_ID_FL = 4  # Front Left
-DXL_ID_FR = 3  # Front Right
-DXL_ID_RL = 2  # Rear Left
-DXL_ID_RR = 1  # Rear Right
+# --- Motor Configuration ---
+DXL_IDS = {
+    'FL': 4,  # Front Left
+    'FR': 3,  # Front Right
+    'RL': 2,  # Rear Left
+    'RR': 1   # Rear Right
+}
 
-VELOCITY_LIMIT = 1023  # Max velocity for MX-106R Dynamixel
+DIR = {
+    'FL': 1,
+    'FR': -1,
+    'RL': 1,
+    'RR': -1
+}
+
+VELOCITY_LIMIT = 1023  # Dynamixel maximum raw velocity
 TORQUE_ENABLE = 1
 TORQUE_DISABLE = 0
-DIR_FL = 1
-DIR_FR = -1
-DIR_RL = 1
-DIR_RR = -1
 
 # Robot physical parameters
-Lx = 0.245  # Distance from center to wheel in x-axis (m)
-Ly = 0.2    # Distance from center to wheel in y-axis (m)
-WHEEL_RADIUS = 0.062  # Radius of the wheels (m)
+Lx = 0.245  # meters
+Ly = 0.2    # meters
+WHEEL_RADIUS = 0.062  # meters
+
+# MX-106 spec constants
+MAX_RPM = 45.0  # Max RPM from datasheet
+MAX_RAD_PER_SEC = MAX_RPM * 2 * math.pi / 60.0
 
 class MotorWriter(Node):
 
     def __init__(self):
-        super().__init__('motor_write')
+        super().__init__('motor_writer')
+
+        # ROS2 subscription
         self.cmd_vel_subscription = self.create_subscription(
             Twist,
             '/cmd_vel',
@@ -35,125 +49,95 @@ class MotorWriter(Node):
             10
         )
 
+        # Dynamixel setup
         self.port_handler = PortHandler(DEVICENAME)
         self.packet_handler = PacketHandler(PROTOCOL_VERSION)
-        self.init_dynamixel()
+        self.sync_write = GroupSyncWrite(self.port_handler, self.packet_handler, ADDR_MX_MOVING_SPEED, 2)
 
-    def init_dynamixel(self):
-        # Initialize Dynamixel motors
+        self.open_port()
+        self.init_motors()
+
+    def open_port(self):
         if not self.port_handler.openPort():
-            self.get_logger().error('Failed to open the port')
-            return
+            self.get_logger().fatal('❌ Failed to open the port')
+            raise RuntimeError('Failed to open port')
         if not self.port_handler.setBaudRate(BAUDRATE):
-            self.get_logger().error('Failed to set the baudrate')
-            return
-        
-        # Enable torque for each motor
-        for dxl_id in [DXL_ID_FL, DXL_ID_FR, DXL_ID_RL, DXL_ID_RR]:
+            self.get_logger().fatal('❌ Failed to set baudrate')
+            raise RuntimeError('Failed to set baudrate')
+        self.get_logger().info('✅ Port initialized')
+
+    def init_motors(self):
+        for name, dxl_id in DXL_IDS.items():
             self.enable_torque(dxl_id)
             self.set_wheel_mode(dxl_id)
+            self.set_acceleration(dxl_id, 20)  # Set once here
 
     def enable_torque(self, dxl_id):
-        # Enable torque for the given motor
         result, error = self.packet_handler.write1ByteTxRx(self.port_handler, dxl_id, ADDR_MX_TORQUE_ENABLE, TORQUE_ENABLE)
-        if result != COMM_SUCCESS:
-            self.get_logger().error(f"Failed to enable torque for motor {dxl_id}: {self.packet_handler.getTxRxResult(result)}")
-        elif error != 0:
-            self.get_logger().error(f"Motor {dxl_id} returned error while enabling torque: {self.packet_handler.getRxPacketError(error)}")
-        else:
-            self.get_logger().info(f"Torque enabled for motor {dxl_id}")
+        if result != COMM_SUCCESS or error != 0:
+            self.get_logger().error(f"❌ Failed to enable torque for motor {dxl_id}")
 
     def set_wheel_mode(self, dxl_id):
-        # Set motor to wheel mode by adjusting CW and CCW angle limits
-        result, error = self.packet_handler.write2ByteTxRx(self.port_handler, dxl_id, ADDR_MX_CW_ANGLE_LIMIT, 0)
-        if result != COMM_SUCCESS or error != 0:
-            self.get_logger().error(f"Failed to set CW angle limit for motor {dxl_id}")
-        result, error = self.packet_handler.write2ByteTxRx(self.port_handler, dxl_id, ADDR_MX_CCW_ANGLE_LIMIT, 0)
-        if result != COMM_SUCCESS or error != 0:
-            self.get_logger().error(f"Failed to set CCW angle limit for motor {dxl_id}")
-        else:
-            self.get_logger().info(f"Motor {dxl_id} set to wheel mode")
+        self.packet_handler.write2ByteTxRx(self.port_handler, dxl_id, ADDR_MX_CW_ANGLE_LIMIT, 0)
+        self.packet_handler.write2ByteTxRx(self.port_handler, dxl_id, ADDR_MX_CCW_ANGLE_LIMIT, 0)
 
-    def disable_torque(self):
-        # Disable torque for each motor when shutting down
-        for dxl_id in [DXL_ID_FL, DXL_ID_FR, DXL_ID_RL, DXL_ID_RR]:
-            result, error = self.packet_handler.write1ByteTxRx(self.port_handler, dxl_id, ADDR_MX_TORQUE_ENABLE, TORQUE_DISABLE)
-            if result != COMM_SUCCESS:
-                self.get_logger().error(f"Failed to disable torque for motor {dxl_id}: {self.packet_handler.getTxRxResult(result)}")
-            elif error != 0:
-                self.get_logger().error(f"Motor {dxl_id} returned error while disabling torque: {self.packet_handler.getRxPacketError(error)}")
-            else:
-                self.get_logger().info(f"Torque disabled for motor {dxl_id}")
+    def set_acceleration(self, dxl_id, accel_value):
+        self.packet_handler.write1ByteTxRx(self.port_handler, dxl_id, ADDR_GOAL_ACCELERATION, accel_value)
 
     def cmd_vel_callback(self, twist_msg):
-        # Convert velocity commands to motor speeds using mecanum wheel kinematics
-        vx = twist_msg.linear.x
-        vy = twist_msg.linear.y
-        omega = twist_msg.angular.z
-        
-        # Calculate velocities for each wheel
-        v_fl, v_fr, v_rl, v_rr = self.calculate_wheel_velocities(vx, vy, omega)
-        
-        # Write to motors
-        self.set_wheel_velocity(DXL_ID_FL, self.convert_velocity(v_fl))
-        self.set_wheel_velocity(DXL_ID_FR, self.convert_velocity(v_fr))
-        self.set_wheel_velocity(DXL_ID_RL, self.convert_velocity(v_rl))
-        self.set_wheel_velocity(DXL_ID_RR, self.convert_velocity(v_rr))
+        vx, vy, omega = twist_msg.linear.x, twist_msg.linear.y, twist_msg.angular.z
+        lxly = Lx + Ly
 
-    def calculate_wheel_velocities(self, vx, vy, omega):
-        # Kinematic equations for mecanum wheels (adjust for correct directions)
-        vel_fl = (vx - vy - (Lx + Ly) * omega) / WHEEL_RADIUS * DIR_FL
-        vel_fr = (vx + vy + (Lx + Ly) * omega) / WHEEL_RADIUS * DIR_FR
-        vel_rl = (vx + vy - (Lx + Ly) * omega) / WHEEL_RADIUS * DIR_RL
-        vel_rr = (vx - vy + (Lx + Ly) * omega) / WHEEL_RADIUS * DIR_RR
-        return vel_fl, vel_fr, vel_rl, vel_rr
+        # Kinematic calculation
+        velocities = {
+            'FL': (vx - vy - omega * lxly) / WHEEL_RADIUS * DIR['FL'],
+            'FR': (vx + vy + omega * lxly) / WHEEL_RADIUS * DIR['FR'],
+            'RL': (vx + vy - omega * lxly) / WHEEL_RADIUS * DIR['RL'],
+            'RR': (vx - vy + omega * lxly) / WHEEL_RADIUS * DIR['RR']
+        }
 
-    def set_wheel_velocity(self, dxl_id, velocity):
-        # Dynamixel motors need velocity to be in the form of a scaled value, so convert accordingly
-        velocity = max(-VELOCITY_LIMIT, min(velocity, VELOCITY_LIMIT))  # Limit velocity to motor max
-        if velocity >= 0:
-            # Forward: map 0-1023 directly to Dynamixel's 0-1023
-            velocity_value = velocity
-        elif velocity < 0:
-            # Reverse: map -1023-0 to Dynamixel's 1024-2047
-            velocity_value = 1024 + abs(velocity)
-        else:
-            velocity_value = 0
+        self.sync_write.clearParam()
+        for name, dxl_id in DXL_IDS.items():
+            raw_velocity = self.scale_velocity(velocities[name])
+            param = [DXL_LOBYTE(raw_velocity), DXL_HIBYTE(raw_velocity)]
+            self.sync_write.addParam(dxl_id, param)
 
-        # Print the velocity value for debugging
-        # self.get_logger().info(f"Setting velocity for motor {dxl_id}: {velocity_value}")
-
-        # Set the acceleration limit for smooth operation
-        self.packet_handler.write1ByteTxRx(self.port_handler, dxl_id, ADDR_GOAL_ACCELERATION, 20)  # Increase acceleration for quicker response
-        result, error = self.packet_handler.write2ByteTxRx(self.port_handler, dxl_id, ADDR_MX_MOVING_SPEED, int(velocity_value))
+        result = self.sync_write.txPacket()
         if result != COMM_SUCCESS:
-            self.get_logger().error(f"Failed to set speed for motor {dxl_id}: {self.packet_handler.getTxRxResult(result)}")
-        elif error != 0:
-            self.get_logger().error(f"Motor {dxl_id} returned error while setting speed: {self.packet_handler.getRxPacketError(error)}")
+            self.get_logger().error(f"❌ SyncWrite error: {self.packet_handler.getTxRxResult(result)}")
 
-    def convert_velocity(self, velocity):
-        # Scale the velocity from m/s to motor value (e.g., scaling factor is based on motor specification)
-        motor_velocity = velocity * 1023  # Example scaling factor, adjust for your motor
-        return int(motor_velocity)
+    def scale_velocity(self, velocity_rad_per_sec):
+        # Normalize from rad/s to Dynamixel range 0-1023 or 1024-2047
+        normalized = velocity_rad_per_sec / MAX_RAD_PER_SEC
+        normalized = max(-1.0, min(1.0, normalized))
+        scaled = int(normalized * VELOCITY_LIMIT)
+
+        if scaled >= 0:
+            return scaled
+        else:
+            return 1024 + abs(scaled)
+
+    def disable_torque(self):
+        for dxl_id in DXL_IDS.values():
+            self.packet_handler.write1ByteTxRx(self.port_handler, dxl_id, ADDR_MX_TORQUE_ENABLE, TORQUE_DISABLE)
 
     def destroy(self):
-        # Disable torque before shutting down
         self.disable_torque()
-        self.port_handler.closePort()
+        if self.port_handler.isPortOpen():
+            self.port_handler.closePort()
 
-
+# --- Main program ---
 def main(args=None):
     rclpy.init(args=args)
-    motor_writer = MotorWriter()
+    node = MotorWriter()
     try:
-        rclpy.spin(motor_writer)
+        rclpy.spin(node)
     except KeyboardInterrupt:
-        motor_writer.get_logger().info("Keyboard interrupt received, shutting down...")
+        node.get_logger().info("🛑 Keyboard interrupt received, shutting down...")
     finally:
-        motor_writer.destroy()
-        motor_writer.destroy_node()
+        node.destroy()
+        node.destroy_node()
         rclpy.shutdown()
-
 
 if __name__ == '__main__':
     main()

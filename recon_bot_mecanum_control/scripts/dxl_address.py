@@ -5,7 +5,7 @@ DXL1_ID                        = 1                 # Dynamixel#1 ID : 1 back-rig
 DXL2_ID                        = 2                 # Dynamixel#2 ID : 2 back-left CCW
 DXL3_ID                        = 3                 # Dynamixel#3 ID : 3 front-right CW
 DXL4_ID                        = 4                 # Dynamixel#4 ID : 4 front-left CCWs
-BAUDRATE                       = 57600             # Dynamixel default baudrate : 57600
+BAUDRATE                       = 1000000             # Dynamixel default baudrate : 57600
 DEVICENAME                     = '/dev/ttyUSB_DYNAMIXEL'    # Port connected to controller
 TORQUE_ENABLE                  = 1                 # Value for enabling the torque
 TORQUE_DISABLE                 = 0                 # Value for disabling the torque
@@ -23,6 +23,9 @@ LEN_MX_PRESENT_SPEED           = 4
 
 DXL_CW_ANGLE_TO_Z              = 0
 DXL_CCW_ANGLETO_Z              = 0
+
+ADDR_PRESENT_VELOCITY = 128
+LEN_PRESENT_VELOCITY = 4
 
 
 # Control table ADDRess for MX-106
@@ -55,7 +58,7 @@ ADDR_MX_GOAL_POSITION          = 30
 ADDR_MX_MOVING_SPEED           = 32
 ADDR_MX_TORQUE_LIMIT           = 34
 ADDR_MX_PRESENT_POSITION       = 36
-ADDR_MX_PRESENT_SPEED          = 38
+# ADDR_MX_PRESENT_SPEED          = 38
 ADDR_MX_PRESENT_LOAD           = 40
 ADDR_MX_PRESENT_VOLTAGE        = 42
 ADDR_MX_PRESENT_TEMPERATURE    = 43
