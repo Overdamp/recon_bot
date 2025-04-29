@@ -32,6 +32,7 @@ scripts/a_motor_read.py
 scripts/a_odometry_pub.py  
 scripts/a_square_drive_test.py
 scripts/a_motor_read_write.py
+scripts/a_wheel_publisher.py
 scripts/docking.py
 
 DESTINATION lib/${PROJECT_NAME}

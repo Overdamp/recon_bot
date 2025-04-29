@@ -1,82 +1,117 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 import rclpy
 from rclpy.node import Node
+from sensor_msgs.msg import JointState
+import math
 from dynamixel_sdk import *
 from dxl_address import *
-from sensor_msgs.msg import JointState
 
-DXL_ID_FL = 4
-DXL_ID_FR = 3
-DXL_ID_RL = 2
-DXL_ID_RR = 1
+# Motor IDs
+DXL_IDS = {
+    "J_Wheel_LF": 4,
+    "J_Wheel_RF": 3,
+    "J_Wheel_LR": 2,
+    "J_Wheel_RR": 1
+}
 
 class MotorReader(Node):
 
     def __init__(self):
         super().__init__('motor_read')
         self.joint_state_pub = self.create_publisher(JointState, '/joint_states', 10)
+
+        # Dynamixel setup
         self.port_handler = PortHandler(DEVICENAME)
         self.packet_handler = PacketHandler(PROTOCOL_VERSION)
-        self.init_dynamixel()
+        self.group_sync_read = GroupSyncRead(self.port_handler, self.packet_handler, ADDR_MX_PRESENT_SPEED, 2)
 
-        # Timer to read motor speeds
-        self.create_timer(0.1, self.read_motor_speeds)
+        self.open_port_and_baud()
+        self.init_sync_read()
 
-    def init_dynamixel(self):
+        self.last_positions = {name: 0.0 for name in DXL_IDS.keys()}
+        self.last_time = self.get_clock().now()
+
+        # Timer: 10Hz
+        self.create_timer(0.1, self.read_and_publish_joint_states)
+        self.get_logger().info("✅ MotorReader node initialized and running.")
+
+    def open_port_and_baud(self):
         if not self.port_handler.openPort():
-            self.get_logger().error('Failed to open port')
+            self.get_logger().error('❌ Failed to open port')
+        else:
+            self.get_logger().info('✅ Port opened successfully')
         if not self.port_handler.setBaudRate(BAUDRATE):
-            self.get_logger().error('Failed to set baudrate')
+            self.get_logger().error('❌ Failed to set baudrate')
+        else:
+            self.get_logger().info('✅ Baudrate set successfully')
 
-    def read_motor_speeds(self):
-        # Read motor speeds from all motors
-        speed_fl, pos_fl = self.read_motor_speed(DXL_ID_FL)
-        speed_fr, pos_fr = self.read_motor_speed(DXL_ID_FR)
-        speed_rl, pos_rl = self.read_motor_speed(DXL_ID_RL)
-        speed_rr, pos_rr = self.read_motor_speed(DXL_ID_RR)
+    def init_sync_read(self):
+        for motor_id in DXL_IDS.values():
+            if not self.group_sync_read.addParam(motor_id):
+                self.get_logger().error(f'❌ Failed to add motor ID {motor_id} to GroupSyncRead')
 
-        # Convert the motor speeds to floats and create JointState message
+    def read_and_publish_joint_states(self):
+        now = self.get_clock().now()
+        dt = (now - self.last_time).nanoseconds * 1e-9
+        self.last_time = now
+
+        # Perform sync read
+        if self.group_sync_read.txRxPacket() != COMM_SUCCESS:
+            self.get_logger().error("❌ Failed GroupSyncRead txRxPacket()")
+            return
+
         joint_state_msg = JointState()
-        joint_state_msg.header.stamp = self.get_clock().now().to_msg()
-        joint_state_msg.header.frame_id = "Mobile_Base" 
-        joint_state_msg.name = [
-        "Wheel_LF",
-        "Wheel_RF",
-        "Wheel_LR",
-        "Wheel_RR"
-    ]
-        joint_state_msg.position = [
-        float(pos_fl),
-        float(pos_fr),
-        float(pos_rl),
-        float(pos_rr)
-    ]
-        # Ensure that the motor speeds are floats and handle cases where they may be invalid
-        joint_state_msg.velocity = [float(speed_fl) if speed_fl is not None else 0.0,
-                                    float(speed_fr) if speed_fr is not None else 0.0,
-                                    float(speed_rl) if speed_rl is not None else 0.0,
-                                    float(speed_rr) if speed_rr is not None else 0.0]
+        joint_state_msg.header.stamp = now.to_msg()
+        joint_state_msg.header.frame_id = "Mobile_Base"
+        joint_state_msg.name = list(DXL_IDS.keys())
+        joint_state_msg.velocity = []
+        joint_state_msg.position = []
+
+        for name, motor_id in DXL_IDS.items():
+            if self.group_sync_read.isAvailable(motor_id, ADDR_MX_PRESENT_SPEED, 2):
+                speed = self.group_sync_read.getData(motor_id, ADDR_MX_PRESENT_SPEED, 2)
+
+                # Convert unsigned to signed (Dynamixel uses 0~1023 for CW, 1024~2047 for CCW)
+                if speed > 1023:
+                    speed = -(speed - 1024)
+
+                # Normalize to rad/s
+                speed_rad = self.dxl_to_rads(speed)
+
+                # Integrate position
+                self.last_positions[name] += speed_rad * dt
+
+                joint_state_msg.velocity.append(speed_rad)
+                joint_state_msg.position.append(self.last_positions[name])
+            else:
+                self.get_logger().warn(f"⚠️ No data for motor {name}")
+                joint_state_msg.velocity.append(0.0)
+                joint_state_msg.position.append(self.last_positions[name])
+
         self.joint_state_pub.publish(joint_state_msg)
 
-    def read_motor_speed(self, motor_id):
-        # Read current speed of a motor
-        try:
-            speed, _, _ = self.packet_handler.read2ByteTxRx(self.port_handler, motor_id, ADDR_MX_PRESENT_SPEED)
-            if speed is None:
-                self.get_logger().error(f"Failed to read speed for motor {motor_id}")
-                return 0.0
-            return speed
-        except Exception as e:
-            self.get_logger().error(f"Error reading motor {motor_id}: {e}")
-            return 0.0
+    def dxl_to_rads(self, value):
+        """Convert raw Dynamixel speed (range -1023~1023) to rad/s"""
+        max_rpm = 45.0  # MX-106 default max RPM (depends if you set VELOCITY_LIMIT)
+        max_rad_per_sec = max_rpm * 2 * math.pi / 60.0
+        return value / 1023.0 * max_rad_per_sec
+
+    def destroy_node(self):
+        self.group_sync_read.clearParam()
+        if self.port_handler.isPortOpen():
+            self.port_handler.closePort()
+        super().destroy_node()
 
 def main(args=None):
     rclpy.init(args=args)
-    motor_reader = MotorReader()
-    rclpy.spin(motor_reader)
-
-    motor_reader.destroy_node()
-    rclpy.shutdown()
+    try:
+        node = MotorReader()
+        rclpy.spin(node)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        node.destroy_node()
+        rclpy.shutdown()
 
 if __name__ == '__main__':
     main()
