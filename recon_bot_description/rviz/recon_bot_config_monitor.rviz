@@ -569,7 +569,7 @@ Visualization Manager:
         Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /back/scan
+        Value: /front/scan
       Use Fixed Frame: true
       Use rainbow: true
       Value: true
@@ -673,7 +673,7 @@ Visualization Manager:
   Value: true
   Views:
     Current:
-      Angle: -4.7099995613098145
+      Angle: -7.8549981117248535
       Class: rviz_default_plugins/TopDownOrtho
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
@@ -683,7 +683,7 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Scale: -193.5499267578125
+      Scale: 208.3545684814453
       Target Frame: <Fixed Frame>
       Value: TopDownOrtho (rviz_default_plugins)
       X: -0.059146568179130554
