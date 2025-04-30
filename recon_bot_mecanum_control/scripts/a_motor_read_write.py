@@ -6,7 +6,7 @@ from rclpy.node import Node
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import JointState
 from dynamixel_sdk import *
-from dxl_address import *
+from dxl_address_2 import *
 import math
 
 # --- Motor Configuration ---
@@ -17,11 +17,9 @@ DIR = { 'FL': 1, 'FR': -1, 'RL': 1, 'RR': -1 }
 WHEEL_RADIUS = 0.062
 Lx = 0.245
 Ly = 0.2
-VELOCITY_LIMIT = 300
 TORQUE_ENABLE = 1
 TORQUE_DISABLE = 0
-max_rpm = 4.714
-TICKS_PER_REVOLUTION = 4096
+max_rpm = 45.0  # Corrected to actual MX-106 max RPM
 
 # --- Motor Controller Node ---
 class MotorController(Node):
@@ -33,8 +31,8 @@ class MotorController(Node):
 
         self.port_handler = PortHandler(DEVICENAME)
         self.packet_handler = PacketHandler(PROTOCOL_VERSION)
-        self.sync_write = GroupSyncWrite(self.port_handler, self.packet_handler, ADDR_MX_MOVING_SPEED, 2)
-        self.sync_read = GroupSyncRead(self.port_handler, self.packet_handler, ADDR_MX_PRESENT_SPEED, LEN_MX_PRESENT_SPEED)
+        self.sync_write = GroupSyncWrite(self.port_handler, self.packet_handler, ADDR_MX_GOAL_VELOCITY, LEN_MX_GOAL_VELOCITY)
+        self.sync_read = GroupSyncRead(self.port_handler, self.packet_handler, ADDR_MX_PRESENT_VELOCITY, LEN_MX_PRESENT_VELOCITY)
 
         if not self.port_handler.openPort():
             self.get_logger().fatal('Failed to open port')
@@ -57,6 +55,7 @@ class MotorController(Node):
         self.packet_handler.write1ByteTxRx(self.port_handler, dxl_id, ADDR_MX_TORQUE_ENABLE, TORQUE_ENABLE)
 
     def set_wheel_mode(self, dxl_id):
+        # Explicitly disable CW/CCW angle limits to enter wheel mode
         self.packet_handler.write2ByteTxRx(self.port_handler, dxl_id, ADDR_MX_CW_ANGLE_LIMIT, 0)
         self.packet_handler.write2ByteTxRx(self.port_handler, dxl_id, ADDR_MX_CCW_ANGLE_LIMIT, 0)
 
@@ -73,16 +72,20 @@ class MotorController(Node):
 
         self.sync_write.clearParam()
         for name, dxl_id in DXL_IDS.items():
-            velocity = int((velocities[name] / max_rpm) * VELOCITY_LIMIT)
-            velocity = max(-VELOCITY_LIMIT, min(velocity, VELOCITY_LIMIT))
-            if velocity >= 0:
-                value = velocity
-            else:
-                value = 1024 + abs(velocity)
-            param = [DXL_LOBYTE(value), DXL_HIBYTE(value)]
+            # Convert velocity [rad/s] -> RPM -> Raw unit for Protocol 2.0 (0.229 rpm/unit)
+            rpm = velocities[name] * 60.0 / (2 * math.pi)
+            raw_value = int(rpm / 0.229)
+            if raw_value < 0:
+                raw_value = (1 << 32) + raw_value  # convert to unsigned 32-bit
+
+            param = [
+                DXL_LOBYTE(DXL_LOWORD(raw_value)),
+                DXL_HIBYTE(DXL_LOWORD(raw_value)),
+                DXL_LOBYTE(DXL_HIWORD(raw_value)),
+                DXL_HIBYTE(DXL_HIWORD(raw_value))
+            ]
             self.sync_write.addParam(dxl_id, param)
 
-        # Send all velocities
         result = self.sync_write.txPacket()
         if result != COMM_SUCCESS:
             self.get_logger().error(f"SyncWrite error: {self.packet_handler.getTxRxResult(result)}")
@@ -92,7 +95,6 @@ class MotorController(Node):
         dt = (now - self.last_time).nanoseconds * 1e-9
         self.last_time = now
 
-        # Only 1 sync read
         result = self.sync_read.txRxPacket()
         if result != COMM_SUCCESS:
             self.get_logger().error(f"SyncRead error: {self.packet_handler.getTxRxResult(result)}")
@@ -106,13 +108,13 @@ class MotorController(Node):
         msg.position = []
 
         for name, dxl_id in DXL_IDS.items():
-            if self.sync_read.isAvailable(dxl_id, ADDR_MX_PRESENT_SPEED, LEN_MX_PRESENT_SPEED):
-                raw_speed = self.sync_read.getData(dxl_id, ADDR_MX_PRESENT_SPEED, LEN_MX_PRESENT_SPEED)
+            if self.sync_read.isAvailable(dxl_id, ADDR_MX_PRESENT_VELOCITY, LEN_MX_PRESENT_VELOCITY):
+                raw_velocity = self.sync_read.getData(dxl_id, ADDR_MX_PRESENT_VELOCITY, LEN_MX_PRESENT_VELOCITY)
+                if raw_velocity > (1 << 31):
+                    raw_velocity -= (1 << 32)
 
-                if raw_speed > 1023:
-                    raw_speed = -(raw_speed - 1024)
-                wheel_rpm = raw_speed * max_rpm / VELOCITY_LIMIT
-                wheel_rad_per_sec = wheel_rpm * 2 * math.pi / 60.0
+                rpm = raw_velocity * 0.229  # unit = 0.229 rpm
+                wheel_rad_per_sec = rpm * 2 * math.pi / 60.0
 
                 self.last_positions[name] += wheel_rad_per_sec * dt
 

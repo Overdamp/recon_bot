@@ -1,115 +1,57 @@
 #!/usr/bin/env python3
 
-# --- Import Libraries ---
-import rclpy
-from rclpy.node import Node
-from sensor_msgs.msg import JointState
-import math
-from dynamixel_sdk import *
-from dxl_address import *
+from dynamixel_sdk import *  # ใช้ SDK จาก Robotis
+import time
 
-# --- Motor IDs Mapping ---
-DXL_IDS = {
-    "FL": 4,
-    "FR": 3,
-    "RL": 2,
-    "RR": 1
-}
+# --- พารามิเตอร์พื้นฐาน ---
+DEVICENAME = '/dev/ttyUSB_DYNAMIXEL'
+BAUDRATE = 1000000
+PROTOCOL_VERSION = 2.0
 
-# --- Motor Reader Node ---
-class MotorReader(Node):
+ADDR_PRESENT_VELOCITY = 128
+LEN_PRESENT_VELOCITY = 4
 
-    def __init__(self):
-        super().__init__('motor_read')
-        
-        self.joint_state_pub = self.create_publisher(JointState, '/joint_states', 10)
+DXL_IDS = [1, 2, 3, 4]
 
-        self.port_handler = PortHandler(DEVICENAME)
-        self.packet_handler = PacketHandler(PROTOCOL_VERSION)
-        self.group_sync_read = GroupSyncRead(self.port_handler, self.packet_handler, 128, 4)  # <- แก้ตรงนี้แล้ว
+# --- สร้าง handler ---
+port_handler = PortHandler(DEVICENAME)
+packet_handler = PacketHandler(PROTOCOL_VERSION)
+group_sync_read = GroupSyncRead(port_handler, packet_handler, ADDR_PRESENT_VELOCITY, LEN_PRESENT_VELOCITY)
 
-        self.open_port_and_baud()
-        self.init_sync_read()
+# --- เปิดพอร์ตและตั้งค่า baudrate ---
+if not port_handler.openPort():
+    print("❌ Failed to open port")
+    quit()
 
-        self.last_positions = {name: 0.0 for name in DXL_IDS.keys()}
-        self.last_time = self.get_clock().now()
+if not port_handler.setBaudRate(BAUDRATE):
+    print("❌ Failed to set baudrate")
+    quit()
 
-        self.create_timer(0.1, self.read_and_publish_joint_states)
+print("✅ Port opened and baudrate set.")
 
-        self.get_logger().info("✅ MotorReader node initialized and running.")
+# --- เพิ่ม ID ทั้งหมดใน group sync read ---
+for dxl_id in DXL_IDS:
+    if not group_sync_read.addParam(dxl_id):
+        print(f"❌ Failed to add ID {dxl_id} to GroupSyncRead")
+        quit()
 
-    def open_port_and_baud(self):
-        if not self.port_handler.openPort():
-            self.get_logger().error('❌ Failed to open port')
-        else:
-            self.get_logger().info('✅ Port opened successfully')
-        if not self.port_handler.setBaudRate(BAUDRATE):
-            self.get_logger().error('❌ Failed to set baudrate')
-        else:
-            self.get_logger().info('✅ Baudrate set successfully')
+# --- อ่านค่า ---
+if group_sync_read.txRxPacket() != COMM_SUCCESS:
+    print(f"❌ GroupSyncRead failed: {packet_handler.getTxRxResult(group_sync_read.txRxPacket())}")
+    quit()
 
-    def init_sync_read(self):
-        for motor_id in DXL_IDS.values():
-            if not self.group_sync_read.addParam(motor_id):
-                self.get_logger().error(f'❌ Failed to add motor ID {motor_id} to GroupSyncRead')
+# --- ดึงข้อมูลจากแต่ละ ID ---
+for dxl_id in DXL_IDS:
+    if group_sync_read.isAvailable(dxl_id, ADDR_PRESENT_VELOCITY, LEN_PRESENT_VELOCITY):
+        velocity = group_sync_read.getData(dxl_id, ADDR_PRESENT_VELOCITY, LEN_PRESENT_VELOCITY)
 
-    def read_and_publish_joint_states(self):
-        now = self.get_clock().now()
-        dt = (now - self.last_time).nanoseconds * 1e-9
-        self.last_time = now
+        # แปลง signed 32-bit
+        if velocity > (1 << 31):
+            velocity -= (1 << 32)
 
-        if self.group_sync_read.txRxPacket() != COMM_SUCCESS:
-            self.get_logger().error("❌ Failed GroupSyncRead txRxPacket()")
-            return
+        print(f"[ID:{dxl_id}] ✅ Present Velocity: {velocity}")
+    else:
+        print(f"[ID:{dxl_id}] ⚠️ Data not available")
 
-        joint_state_msg = JointState()
-        joint_state_msg.header.stamp = now.to_msg()
-        joint_state_msg.header.frame_id = "Mobile_Base"
-        joint_state_msg.name = list(DXL_IDS.keys())
-        joint_state_msg.velocity = []
-        joint_state_msg.position = []
-
-        for name, motor_id in DXL_IDS.items():
-            if self.group_sync_read.isAvailable(motor_id, 128, 4):
-                data = self.group_sync_read.getData(motor_id, 128, 4)
-                raw_speed = int.from_bytes(data.to_bytes(4, byteorder='little'), byteorder='little', signed=True)
-
-                wheel_rad_per_sec = self.velocity_to_rads(raw_speed)
-
-                self.last_positions[name] += wheel_rad_per_sec * dt
-
-                joint_state_msg.velocity.append(wheel_rad_per_sec)
-                joint_state_msg.position.append(self.last_positions[name])
-            else:
-                self.get_logger().warn(f"⚠️ No data for motor {name}")
-                joint_state_msg.velocity.append(0.0)
-                joint_state_msg.position.append(self.last_positions[name])
-
-        self.joint_state_pub.publish(joint_state_msg)
-
-    def velocity_to_rads(self, raw_velocity):
-        # MX-106: หน่วย RPM -> rad/s
-        rpm = raw_velocity * 0.229  # 0.229 คือ conversion factor ของ Dynamixel MX series
-        rad_per_sec = rpm * 2 * math.pi / 60.0
-        return rad_per_sec
-
-    def destroy_node(self):
-        self.group_sync_read.clearParam()
-        if self.port_handler.isPortOpen():
-            self.port_handler.closePort()
-        super().destroy_node()
-
-# --- Main function ---
-def main(args=None):
-    rclpy.init(args=args)
-    try:
-        node = MotorReader()
-        rclpy.spin(node)
-    except KeyboardInterrupt:
-        pass
-    finally:
-        node.destroy_node()
-        rclpy.shutdown()
-
-if __name__ == '__main__':
-    main()
+# --- ปิดพอร์ต ---
+port_handler.closePort()
