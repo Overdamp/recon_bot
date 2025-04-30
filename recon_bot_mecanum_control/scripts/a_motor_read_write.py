@@ -3,15 +3,9 @@ import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import JointState
-<<<<<<< Updated upstream
 from dynamixel_sdk import *
 from dxl_address_2 import *
 import math
-=======
-from dynamixel_sdk import *  # Use Dynamixel SDK library
-from dxl_address import *
-import time  # For adding delay to allow motors to reach position
->>>>>>> Stashed changes
 
 # Motor constants for a Mecanum drive
 DXL_ID_FL = 4  # Front Left
@@ -19,7 +13,6 @@ DXL_ID_FR = 3  # Front Right
 DXL_ID_RL = 2  # Rear Left
 DXL_ID_RR = 1  # Rear Right
 
-<<<<<<< Updated upstream
 # --- Robot Physical Constants ---
 WHEEL_RADIUS = 0.062
 Lx = 0.245
@@ -27,15 +20,6 @@ Ly = 0.2
 TORQUE_ENABLE = 1
 TORQUE_DISABLE = 0
 max_rpm = 45.0  # Corrected to actual MX-106 max RPM
-=======
-VELOCITY_LIMIT = 300  # Max velocity for MX-106R Dynamixel
-TORQUE_ENABLE = 1
-TORQUE_DISABLE = 0
-DIR_FL = 1
-DIR_FR = -1
-DIR_RL = 1
-DIR_RR = -1
->>>>>>> Stashed changes
 
 # Robot physical parameters
 Lx = 0.245  # Distance from center to wheel in x-axis (m)
@@ -58,15 +42,8 @@ class MotorReadWrite(Node):
         
         self.port_handler = PortHandler(DEVICENAME)
         self.packet_handler = PacketHandler(PROTOCOL_VERSION)
-<<<<<<< Updated upstream
         self.sync_write = GroupSyncWrite(self.port_handler, self.packet_handler, ADDR_MX_GOAL_VELOCITY, LEN_MX_GOAL_VELOCITY)
         self.sync_read = GroupSyncRead(self.port_handler, self.packet_handler, ADDR_MX_PRESENT_VELOCITY, LEN_MX_PRESENT_VELOCITY)
-=======
-        self.init_dynamixel()
-
-        # Timer to read motor speeds
-        self.create_timer(0.1, self.read_motor_speeds)
->>>>>>> Stashed changes
 
     def init_dynamixel(self):
         # Initialize Dynamixel motors
@@ -104,7 +81,6 @@ class MotorReadWrite(Node):
             self.get_logger().info(f"Torque enabled for motor {dxl_id}")
 
     def set_wheel_mode(self, dxl_id):
-<<<<<<< Updated upstream
         # Explicitly disable CW/CCW angle limits to enter wheel mode
         self.packet_handler.write2ByteTxRx(self.port_handler, dxl_id, ADDR_MX_CW_ANGLE_LIMIT, 0)
         self.packet_handler.write2ByteTxRx(self.port_handler, dxl_id, ADDR_MX_CCW_ANGLE_LIMIT, 0)
@@ -137,32 +113,6 @@ class MotorReadWrite(Node):
             self.sync_write.addParam(dxl_id, param)
 
         result = self.sync_write.txPacket()
-=======
-        # Set motor to wheel mode by adjusting CW and CCW angle limits
-        result, error = self.packet_handler.write2ByteTxRx(self.port_handler, dxl_id, ADDR_MX_CW_ANGLE_LIMIT, 0)
-        if result != COMM_SUCCESS or error != 0:
-            self.get_logger().error(f"Failed to set CW angle limit for motor {dxl_id}")
-        result, error = self.packet_handler.write2ByteTxRx(self.port_handler, dxl_id, ADDR_MX_CCW_ANGLE_LIMIT, 0)
-        if result != COMM_SUCCESS or error != 0:
-            self.get_logger().error(f"Failed to set CCW angle limit for motor {dxl_id}")
-        else:
-            self.get_logger().info(f"Motor {dxl_id} set to wheel mode")
-
-    def set_position_mode(self, dxl_id):
-        # Set motor to position control mode
-        result, error = self.packet_handler.write2ByteTxRx(self.port_handler, dxl_id, ADDR_MX_CW_ANGLE_LIMIT, 0)
-        if result != COMM_SUCCESS or error != 0:
-            self.get_logger().error(f"Failed to set CW angle limit for motor {dxl_id}")
-        result, error = self.packet_handler.write2ByteTxRx(self.port_handler, dxl_id, ADDR_MX_CCW_ANGLE_LIMIT, 4095)
-        if result != COMM_SUCCESS or error != 0:
-            self.get_logger().error(f"Failed to set CCW angle limit for motor {dxl_id}")
-        else:
-            self.get_logger().info(f"Motor {dxl_id} set to position control mode")
-
-    def set_motor_position(self, dxl_id, position):
-        # Set motor to the desired position (0-4095)
-        result, error = self.packet_handler.write2ByteTxRx(self.port_handler, dxl_id, ADDR_MX_GOAL_POSITION, position)
->>>>>>> Stashed changes
         if result != COMM_SUCCESS:
             self.get_logger().error(f"Failed to set position for motor {dxl_id}: {self.packet_handler.getTxRxResult(result)}")
         elif error != 0:
@@ -235,14 +185,7 @@ class MotorReadWrite(Node):
         # Log the velocity being commanded to the motor
         self.get_logger().info(f"Setting motor {dxl_id} to velocity: {velocity_value} (original: {velocity})")
 
-<<<<<<< Updated upstream
         result = self.sync_read.txRxPacket()
-=======
-
-        # Set the acceleration limit for smooth operation
-        self.packet_handler.write1ByteTxRx(self.port_handler, dxl_id, ADDR_GOAL_ACCELERATION, 20)  # Increase acceleration for quicker response
-        result, error = self.packet_handler.write2ByteTxRx(self.port_handler, dxl_id, ADDR_MX_MOVING_SPEED, int(velocity_value))
->>>>>>> Stashed changes
         if result != COMM_SUCCESS:
             self.get_logger().error(f"Failed to set speed for motor {dxl_id}: {self.packet_handler.getTxRxResult(result)}")
         elif error != 0:
@@ -253,7 +196,6 @@ class MotorReadWrite(Node):
         motor_velocity = (velocity/max_rpm) * 300  # Example scaling factor, adjust for your motor
         return int(motor_velocity)
 
-<<<<<<< Updated upstream
         for name, dxl_id in DXL_IDS.items():
             if self.sync_read.isAvailable(dxl_id, ADDR_MX_PRESENT_VELOCITY, LEN_MX_PRESENT_VELOCITY):
                 raw_velocity = self.sync_read.getData(dxl_id, ADDR_MX_PRESENT_VELOCITY, LEN_MX_PRESENT_VELOCITY)
@@ -262,20 +204,6 @@ class MotorReadWrite(Node):
 
                 rpm = raw_velocity * 0.229  # unit = 0.229 rpm
                 wheel_rad_per_sec = rpm * 2 * math.pi / 60.0
-=======
-    def read_motor_speeds(self):
-        # Read motor speeds and positions from all motors
-        speed_fl, pos_fl = self.read_motor_state(DXL_ID_FL)
-        speed_fr, pos_fr = self.read_motor_state(DXL_ID_FR)
-        speed_rl, pos_rl = self.read_motor_state(DXL_ID_RL)
-        speed_rr, pos_rr = self.read_motor_state(DXL_ID_RR)
-
-        # Create JointState message
-        joint_state_msg = JointState()
-        
-        # Set the header timestamp
-        joint_state_msg.header.stamp = self.get_clock().now().to_msg()
->>>>>>> Stashed changes
 
         # Set the velocities for each joint
         joint_state_msg.velocity = [
