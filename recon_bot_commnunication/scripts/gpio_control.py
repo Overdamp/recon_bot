@@ -10,7 +10,7 @@ class GPIOController(Node):
         super().__init__('gpio_controller')
 
         # Define GPIO pins (use BCM numbering)
-        self.gpio_pins = [18, 23, 24]  # Replace with the actual GPIO pins you are using
+        self.gpio_pins = [23, 24, 13, 22]  # Replace with the actual GPIO pins you are using
 
         # Set up GPIO pins as output
         GPIO.setmode(GPIO.BCM)
@@ -31,9 +31,9 @@ class GPIOController(Node):
     def joy_callback(self, msg):
         # Map joystick buttons to GPIO pins
         button_to_gpio = {
-            0: self.gpio_pins[0],  # Button 0 -> GPIO pin 18
-            1: self.gpio_pins[1],  # Button 1 -> GPIO pin 23
-            2: self.gpio_pins[2]   # Button 2 -> GPIO pin 24
+            0: self.gpio_pins[0],  # Button 0 -> GPIO pin 23
+            1: self.gpio_pins[1],  # Button 1 -> GPIO pin 24
+            2: self.gpio_pins[2]   # Button 2 -> GPIO pin 13
         }
 
         for button_index, gpio_pin in button_to_gpio.items():
@@ -45,13 +45,22 @@ class GPIOController(Node):
     def set_gpio_state(self, gpio_pin, state):
         # Set the GPIO pin to the desired state
         GPIO.output(gpio_pin, state)
-        self.get_logger().info(f"Set GPIO {gpio_pin} to {'HIGH' if state == GPIO.HIGH else 'LOW'}")
+        self.get_logger().info(f"Set GPIO kkkkkkk {gpio_pin} to {'HIGH' if state == GPIO.HIGH else 'LOW'}")
 
     def check_gpio_states(self):
         # Read and print the current state of all GPIO pins
         for gpio_pin in self.gpio_pins:
             state = GPIO.input(gpio_pin)
-            self.get_logger().info(f"GPIO {gpio_pin} current state: {'HIGH' if state == GPIO.HIGH else 'LOW'}")
+            self.get_logger().info(f"GPIO uuuuuuuuu{gpio_pin} current state: {'HIGH' if state == GPIO.HIGH else 'LOW'}")
+        
+        # GPIO.setup(27, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        # input_state = GPIO.input(27)
+        # # GPIO.output(13, 1)
+        # if input_state == 0:  # ถ้าค่าคือ LOW (ปุ่มถูกกด)
+        #     self.get_logger().info(f"low {input_state} ")
+        # else:  # ถ้าค่าคือ HIGH (ปุ่มไม่ได้กด)
+        #     self.get_logger().info(f"high {input_state} ")
+        
 
     def destroy_node(self):
         # Cleanup GPIO before exiting
@@ -69,3 +78,4 @@ def main(args=None):
 
 if __name__ == '__main__':
     main()
+

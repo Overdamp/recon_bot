@@ -2,10 +2,12 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="recon_bot">
 
     <!-- Include robot and lidar Xacro files -->
-    <xacro:include filename="$(find recon_bot_description)/robot/robot.core.xacro"/>
+    <xacro:include filename="$(find recon_bot_description)/robot/recon_bot.core.xacro"/>
     <xacro:include filename="$(find recon_bot_description)/robot/lidar.xacro"/>
-
-    <!-- Arguments for ZED Camera -->
+    <xacro:include filename="$(find recon_bot_description)/robot/ros2_control.xacro" />
+    <xacro:recon_x_ros2_control name="recon_x_ros2_control" />
+    
+/*<!-- Arguments for ZED Camera -->
     <xacro:arg name="camera_name" default="zed" />
     <xacro:arg name="camera_model" default="zed2i" />
     <xacro:arg name="use_zed_localization" default="true" />
