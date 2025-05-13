@@ -1,0 +1,11 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 100  # Hz
+
+    wheel_velocity_controller:
+      type: velocity_controllers/JointGroupVelocityController
+      joints:
+        - wheel_fl_joint
+        - wheel_fr_joint
+        - wheel_rl_joint
+        - wheel_rr_joint

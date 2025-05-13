@@ -9,7 +9,7 @@ import xacro
 
 def generate_launch_description():
     # Define the package and file path for the URDF/Xacro file
-    package_name = 'recon_bot_description'  # <--- CHANGE ME IF NECESSARY
+    package_name = 'recon_bot_description'
     xacro_file_path = os.path.join(
         get_package_share_directory(package_name),
         'robot',
@@ -19,7 +19,7 @@ def generate_launch_description():
     # Process the xacro file to generate the robot description
     robot_description = xacro.process_file(xacro_file_path).toxml()
 
-    # Use robot state publisher to publish the robot description to the parameter server
+    # Robot State Publisher
     robot_state_publisher = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
@@ -30,7 +30,7 @@ def generate_launch_description():
         ]
     )
 
-    # Joint State Publisher Node (for manual joint state publication) with event handler
+    # Joint State Publisher
     joint_state_publisher = Node(
         package='joint_state_publisher',
         executable='joint_state_publisher',
@@ -46,7 +46,7 @@ def generate_launch_description():
         )
     )
 
-    # RViz Node with delay to ensure all other nodes are ready
+    # RViz
     rviz_file_name = 'recon_bot_config_rsp.rviz'
     rviz_file_path = os.path.join(
         get_package_share_directory(package_name),
@@ -54,7 +54,7 @@ def generate_launch_description():
         rviz_file_name
     )
     delayed_rviz = TimerAction(
-        period=10.0,  # Delay to ensure robot state publisher is fully initialized
+        period=10.0,
         actions=[
             Node(
                 package='rviz2',
@@ -69,8 +69,8 @@ def generate_launch_description():
     # Launch Description
     launch_description = LaunchDescription([
         robot_state_publisher,
-        delayed_joint_state_publisher,
-        delayed_rviz
+        # delayed_joint_state_publisher,
+        # delayed_rviz
     ])
 
     return launch_description

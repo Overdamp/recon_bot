@@ -25,6 +25,7 @@ scripts/base_joy.py
 scripts/test_motor.py
 scripts/mecanum_odometry.py
 scripts/read_motor.py
+scripts/mecanum_controller.py
 
 scripts/a_joy_cmd_vel.py  
 scripts/a_motor_write.py

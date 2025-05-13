@@ -5,9 +5,6 @@ controller_manager:
     velocity_controller:
       type: velocity_controllers/JointGroupVelocityController
 
-    joint_trajectory_controller:
-      type: joint_trajectory_controller/JointTrajectoryController
-
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster
 
@@ -19,16 +16,7 @@ velocity_controller:
       - J_Wheel_RF
       - J_Wheel_LF
 
-joint_trajectory_controller:
-  ros__parameters:
-    joints:
-      - J_Wheel_RR
-      - J_Wheel_LR
-      - J_Wheel_RF
-      - J_Wheel_LF
-
     command_interfaces:
-      - position
       - velocity
 
     state_interfaces:
