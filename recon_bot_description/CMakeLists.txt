@@ -10,6 +10,10 @@ find_package(ament_cmake REQUIRED)		# cpp (optional)
 find_package(rclcpp REQUIRED)			# cpp (optional)
 find_package(ament_cmake_python REQUIRED)   	# python (optional)
 find_package(rclpy REQUIRED)                	# python (optional)
+
+find_package(ros2_control REQUIRED)
+find_package(ros2_controllers REQUIRED)
+find_package(dynamixel_hardware REQUIRED)
 ######################################################
 
 # Install Python Module

@@ -5,7 +5,7 @@
     <xacro:include filename="$(find recon_bot_description)/robot/recon_bot.core.xacro"/>
     <xacro:include filename="$(find recon_bot_description)/robot/lidar.xacro"/>
     <xacro:include filename="$(find recon_bot_description)/robot/ros2_control.xacro" />
-    <xacro:recon_x_ros2_control name="recon_x_ros2_control" />
+    <xacro:recon_control name="recon_control" />
     
 /*<!-- Arguments for ZED Camera -->
     <xacro:arg name="camera_name" default="zed" />

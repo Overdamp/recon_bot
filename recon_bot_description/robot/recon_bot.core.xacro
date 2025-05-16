@@ -6,7 +6,7 @@
      For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
   <xacro:include filename="$(find recon_bot_description)/robot/materials.xacro"/>
 
-  <link name="odom">
+  <!-- <link name="odom">
     <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 3.14" />
   </link>
 
@@ -14,7 +14,7 @@
     <parent link="odom"/>
     <child link="base_footprint"/>
     <origin rpy="0 0 0" xyz="0 0 0"/>
-  </joint>
+  </joint> -->
 
   <link name="base_footprint">
     <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 3.14" />
@@ -49,9 +49,7 @@
           filename="package://recon_bot_description/meshes/Mobile_Base.STL" />
       </geometry>
       <material
-        name="">
-        <color
-          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+        name="orange">
       </material>
     </visual>
     <collision>
@@ -159,7 +157,7 @@
   </link>
   <joint
     name="J_Roller_LF_1"
-    type="continuous">
+    type="fixed">
     <origin
       xyz="0.0495000000000021 0 0"
       rpy="0 0.785398163397682 1.57079632679483" />
@@ -212,7 +210,7 @@
   </link>
   <joint
     name="J_Roller_LF_2"
-    type="continuous">
+    type="fixed">
     <origin
       xyz="0.0350017856687387 0.0350017856687551 0"
       rpy="0 0.785398163397817 2.35619449019253" />
@@ -265,7 +263,7 @@
   </link>
   <joint
     name="J_Roller_LF_3"
-    type="continuous">
+    type="fixed">
     <origin
       xyz="0 0.0494999999999665 0"
       rpy="0 0.785398163397733 -3.14159265358936" />
@@ -318,7 +316,7 @@
   </link>
   <joint
     name="J_Roller_LF_4"
-    type="continuous">
+    type="fixed">
     <origin
       xyz="-0.0350017856687272 0.0350017856687195 0"
       rpy="0 0.785398163397478 -2.35619449019179" />
@@ -371,7 +369,7 @@
   </link>
   <joint
     name="J_Roller_LF_5"
-    type="continuous">
+    type="fixed">
     <origin
       xyz="-0.0495000000000251 0 0"
       rpy="0 0.785398163397209 -1.57079632679442" />
@@ -424,7 +422,7 @@
   </link>
   <joint
     name="J_Roller_LF_6"
-    type="continuous">
+    type="fixed">
     <origin
       xyz="-0.0350017856687449 -0.0350017856687672 0"
       rpy="0 0.785398163397077 -0.785398163397211" />
@@ -477,7 +475,7 @@
   </link>
   <joint
     name="J_Roller_LF_7"
-    type="continuous">
+    type="fixed">
     <origin
       xyz="0 -0.0494999999999995 0"
       rpy="0 0.785398163397161 0" />
@@ -530,7 +528,7 @@
   </link>
   <joint
     name="J_Roller_LF_8"
-    type="continuous">
+    type="fixed">
     <origin
       xyz="0.0350017856687419 -0.0350017856687232 0"
       rpy="0 0.785398163397412 0.785398163397306" />
@@ -636,7 +634,7 @@
   </link>
   <joint
     name="J_Roller_LR_1"
-    type="continuous">
+    type="fixed">
     <origin
       xyz="0.0494999999999991 0 0"
       rpy="0 0.785398163397451 -1.57079632679496" />
@@ -689,7 +687,7 @@
   </link>
   <joint
     name="J_Roller_LR_2"
-    type="continuous">
+    type="fixed">
     <origin
       xyz="0.0350017856687349 0.0350017856687338 0"
       rpy="0 0.785398163397457 -0.785398163397507" />
@@ -742,7 +740,7 @@
   </link>
   <joint
     name="J_Roller_LR_3"
-    type="continuous">
+    type="fixed">
     <origin
       xyz="0 0.0494999999999999 0"
       rpy="0 0.785398163397457 -0.785398163397507" />
@@ -795,7 +793,7 @@
   </link>
   <joint
     name="J_Roller_LR_4"
-    type="continuous">
+    type="fixed">
     <origin
       xyz="-0.0350017856687312 0.035001785668738 0"
       rpy="0 0.78539816339745 0.785398163397392" />
@@ -848,7 +846,7 @@
   </link>
   <joint
     name="J_Roller_LR_5"
-    type="continuous">
+    type="fixed">
     <origin
       xyz="-0.0494999999999998 0 0"
       rpy="0 0.785398163397442 1.57079632679484" />
@@ -901,7 +899,7 @@
   </link>
   <joint
     name="J_Roller_LR_6"
-    type="continuous">
+    type="fixed">
     <origin
       xyz="-0.0350017856687373 -0.035001785668729 0"
       rpy="0 0.785398163397437 2.35619449019228" />
@@ -954,7 +952,7 @@
   </link>
   <joint
     name="J_Roller_LR_7"
-    type="continuous">
+    type="fixed">
     <origin
       xyz="0 -0.0494999999999981 0"
       rpy="0 0.785398163397437 3.14159265358973" />
@@ -1007,7 +1005,7 @@
   </link>
   <joint
     name="J_Roller_LR_8"
-    type="continuous">
+    type="fixed">
     <origin
       xyz="0.0350017856687324 -0.035001785668733 0"
       rpy="0 0.785398163397443 -2.35619449019241" />
@@ -1113,7 +1111,7 @@
   </link>
   <joint
     name="J_Roller_RF_1"
-    type="continuous">
+    type="fixed">
     <origin
       xyz="0.0494999999999999 0 0"
       rpy="0 -0.785398163397448 1.57079632679489" />
@@ -1166,7 +1164,7 @@
   </link>
   <joint
     name="J_Roller_RF_2"
-    type="continuous">
+    type="fixed">
     <origin
       xyz="0.0350017856687338 -0.0350017856687341 0"
       rpy="0 -0.785398163397438 0.785398163397447" />
@@ -1219,7 +1217,7 @@
   </link>
   <joint
     name="J_Roller_RF_3"
-    type="continuous">
+    type="fixed">
     <origin
       xyz="0 -0.0495 0"
       rpy="-0.609288783050202 0.53106684913527 2.19857820493268" />
@@ -1272,7 +1270,7 @@
   </link>
   <joint
     name="J_Roller_RF_4"
-    type="continuous">
+    type="fixed">
     <origin
       xyz="-0.0350017856687344 -0.0350017856687337 0"
       rpy="0 -0.785398163397439 -0.785398163397433" />
@@ -1325,7 +1323,7 @@
   </link>
   <joint
     name="J_Roller_RF_5"
-    type="continuous">
+    type="fixed">
     <origin
       xyz="-0.0495 0 0"
       rpy="0 -0.785398163397448 -1.57079632679488" />
@@ -1378,7 +1376,7 @@
   </link>
   <joint
     name="J_Roller_RF_6"
-    type="continuous">
+    type="fixed">
     <origin
       xyz="-0.0350017856687347 0.035001785668734 0"
       rpy="0 -0.785398163397459 -2.35619449019234" />
@@ -1431,7 +1429,7 @@
   </link>
   <joint
     name="J_Roller_RF_7"
-    type="continuous">
+    type="fixed">
     <origin
       xyz="0 0.0495 0"
       rpy="0 -0.785398163397463 3.14159265358979" />
@@ -1484,7 +1482,7 @@
   </link>
   <joint
     name="J_Roller_RF_8"
-    type="continuous">
+    type="fixed">
     <origin
       xyz="0.0350017856687329 0.0350017856687334 0"
       rpy="0 -0.785398163397459 2.35619449019235" />
@@ -1590,7 +1588,7 @@
   </link>
   <joint
     name="J_Roller_RR_1"
-    type="continuous">
+    type="fixed">
     <origin
       xyz="0.049500000000006 0 0"
       rpy="0 -0.785398163397444 -1.57079632679489" />
@@ -1643,7 +1641,7 @@
   </link>
   <joint
     name="J_Roller_RR_2"
-    type="continuous">
+    type="fixed">
     <origin
       xyz="0.049500000000006 0 0"
       rpy="0 -0.785398163397444 -1.57079632679489" />
@@ -1696,7 +1694,7 @@
   </link>
   <joint
     name="J_Roller_RR_3"
-    type="continuous">
+    type="fixed">
     <origin
       xyz="0 -0.0495000000000001 0"
       rpy="0 -0.785398163397275 -3.14159265358962" />
@@ -1749,7 +1747,7 @@
   </link>
   <joint
     name="J_Roller_RR_4"
-    type="continuous">
+    type="fixed">
     <origin
       xyz="-0.0350017856687443 -0.0350017856687639 0"
       rpy="0 -0.785398163397327 2.35619449019265" />
@@ -1802,7 +1800,7 @@
   </link>
   <joint
     name="J_Roller_RR_5"
-    type="continuous">
+    type="fixed">
     <origin
       xyz="-0.0495000000000206 0 0"
       rpy="0 -0.78539816339745 1.57079632679524" />
@@ -1855,7 +1853,7 @@
   </link>
   <joint
     name="J_Roller_RR_6"
-    type="continuous">
+    type="fixed">
     <origin
       xyz="-0.0350017856687212 0.0350017856687237 0"
       rpy="0 -0.785398163397572 0.78539816339774" />
@@ -1908,7 +1906,7 @@
   </link>
   <joint
     name="J_Roller_RR_7"
-    type="continuous">
+    type="fixed">
     <origin
       xyz="0 0.0494999999999669 0"
       rpy="0 -0.78539816339762 0" />
@@ -1961,7 +1959,7 @@
   </link>
   <joint
     name="J_Roller_RR_8"
-    type="continuous">
+    type="fixed">
     <origin
       xyz="0.0350017856687396 0.0350017856687503 0"
       rpy="0 -0.785398163397566 -0.785398163397389" />
@@ -2014,7 +2012,7 @@
   </link>
   <joint
     name="J_Pin_Head_L"
-    type="prismatic">
+    type="fixed">
     <origin
       xyz="0.04 0.2352 0.06"
       rpy="4.71365 -1.5708 0" />
@@ -2072,7 +2070,7 @@
   </link>
   <joint
     name="J_Pin_Head_R"
-    type="prismatic">
+    type="fixed">
     <origin
       xyz="-0.04 -0.2335 0.06"
       rpy="1.5708 1.5708 0" />

@@ -4,7 +4,8 @@ from rclpy.node import Node
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import JointState
 from dynamixel_sdk import *  # Use Dynamixel SDK library
-from dxl_address import *
+# from dxl_address import *
+from dxl_address_2 import *
 import time  # For adding delay to allow motors to reach position
 
 # Motor constants for a Mecanum drive

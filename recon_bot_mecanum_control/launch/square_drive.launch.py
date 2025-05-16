@@ -19,7 +19,7 @@ def generate_launch_description():
             actions=[
                 Node(
                     package='recon_bot_mecanum_control',
-                    executable='a_motor_read_write.py',
+                    executable='b_motor_read_write.py',
                     name='a_motor_read_write',
                     output='screen'
                 )
