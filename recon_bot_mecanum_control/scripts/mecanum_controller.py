@@ -25,11 +25,11 @@ class MecanumBaseController(Node):
                 ('dxl_id_rl', 2),
                 ('dxl_id_rr', 1),
                 ('cmd_vel_timeout', 1.0),  # Increased to 1.0s to reduce interruptions
-                ('loop_rate', 50.0),
+                ('loop_rate', 100.0),
                 ('enable_axis', -1),
                 ('enable_axis_threshold', 0.5),
-                ('max_linear_speed', 0.8),
-                ('max_angular_speed', 1.5),
+                ('max_linear_speed', 2.0),
+                ('max_angular_speed', 4.0),
                 ('zero_cmd_threshold', 0.001),
                 ('cmd_vel_debounce', 0.01),
                 ('max_wheel_omega', 8.16),
@@ -209,10 +209,10 @@ class MecanumBaseController(Node):
     def mecanum_inverse_kinematics(self, vx, vy, wz):
         r = self.r
         L = self.L
-        w_rr = (1 / r) * (vx - vy - L * wz)
+        w_rr = (1 / r) * (vx - vy + L * wz)
         w_lr = (1 / r) * (vx + vy - L * wz)
         w_rf = (1 / r) * (vx + vy + L * wz)
-        w_lf = (1 / r) * (vx - vy + L * wz)
+        w_lf = (1 / r) * (vx - vy - L * wz)
         return [w_rr, w_lr, w_rf, w_lf]
 
     def calculate_robot_velocity(self, wheel_speeds):
@@ -220,9 +220,10 @@ class MecanumBaseController(Node):
         L = self.L
         w_rr, w_lr, w_rf, w_lf = wheel_speeds
         vx = r / 4 * (w_rr + w_lr + w_rf + w_lf)
-        vy = r / 4 * (-w_rr + w_lr + w_rf - w_lf)
-        wz = r / (4 * L) * (-w_rr - w_lr + w_rf + w_lf)
+        vy = r / 4 * (-w_rr + w_lr + w_rf - w_lf)  
+        wz = r / (4 * L) * (w_rr - w_lr + w_rf - w_lf)  
         return vx, vy, wz
+
 
     def publish_odometry(self, now, vx, vy, wz):
         odom_msg = Odometry()

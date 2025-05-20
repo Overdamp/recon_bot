@@ -17,17 +17,27 @@ class JoystickCommandVelocity(Node):
             10
         )
         self.cmd_vel_pub = self.create_publisher(Twist, '/cmd_vel', 10)
+        # Initialize low-pass filter variables
+        self.alpha = 0.2  # Filter coefficient (0 < alpha <= 1, lower = smoother)
+        self.filtered_linear_x = 0.0
+        self.filtered_linear_y = 0.0
+        self.filtered_angular_z = 0.0
 
     def joystick_callback(self, joy_msg):
         # Example mapping, change based on joystick configuration
         linear_x = joy_msg.axes[1] * 1.0 * max_velocity  # Forward/Backward movement
         linear_y = joy_msg.axes[0] * 1.0 * max_velocity  # Left/Right strafing
-        angular_z = joy_msg.axes[3] * 1.0 * max_velocity # Rotation
+        angular_z = joy_msg.axes[2] * 1.0 * max_velocity # Rotation
+
+        # Apply low-pass filter
+        self.filtered_linear_x = self.alpha * linear_x + (1.0 - self.alpha) * self.filtered_linear_x
+        self.filtered_linear_y = self.alpha * linear_y + (1.0 - self.alpha) * self.filtered_linear_y
+        self.filtered_angular_z = self.alpha * angular_z + (1.0 - self.alpha) * self.filtered_angular_z
 
         cmd_vel_msg = Twist()
-        cmd_vel_msg.linear.x = linear_x
-        cmd_vel_msg.linear.y = linear_y
-        cmd_vel_msg.angular.z = angular_z
+        cmd_vel_msg.linear.x = self.filtered_linear_x
+        cmd_vel_msg.linear.y = self.filtered_linear_y
+        cmd_vel_msg.angular.z = self.filtered_angular_z
         
         self.cmd_vel_pub.publish(cmd_vel_msg)
 

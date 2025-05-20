@@ -7,11 +7,11 @@
     <xacro:include filename="$(find recon_bot_description)/robot/ros2_control.xacro" />
     <xacro:recon_control name="recon_control" />
     
-/*<!-- Arguments for ZED Camera -->
+    <!-- Arguments for ZED Camera -->
     <xacro:arg name="camera_name" default="zed" />
     <xacro:arg name="camera_model" default="zed2i" />
-    <xacro:arg name="use_zed_localization" default="false" />
-  <xacro:arg name="custom_baseline"  default="0.0" />
+    <xacro:arg name="use_zed_localization" default="true" />
+    <xacro:arg name="custom_baseline"  default="0.0" />
 
     <!-- If GNSS fusion is enabled the position of the antenna with respect to the camera mount point is required -->
     <xacro:arg name="enable_gnss"   default="false" />

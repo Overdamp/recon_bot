@@ -69,8 +69,8 @@ def generate_launch_description():
     # Launch Description
     launch_description = LaunchDescription([
         robot_state_publisher,
-        # delayed_joint_state_publisher,
-        # delayed_rviz
+        delayed_joint_state_publisher,
+        delayed_rviz
     ])
 
     return launch_description

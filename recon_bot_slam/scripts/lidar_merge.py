@@ -113,12 +113,12 @@ class LaserScanMerger(Node):
         # Create merged scan message
         merged_scan = LaserScan()
         merged_scan.header.stamp = self.get_clock().now().to_msg()
-        merged_scan.header.frame_id = 'Mobile_Base'
+        merged_scan.header.frame_id = 'base_footprint'
         merged_scan.angle_min = angle_min
         merged_scan.angle_max = angle_max
         merged_scan.angle_increment = angle_increment
-        merged_scan.time_increment = 0.0
-        merged_scan.scan_time = 0.0
+        merged_scan.time_increment = self.front_scan.time_increment
+        merged_scan.scan_time = self.front_scan.scan_time
         merged_scan.range_min = min(self.front_scan.range_min, self.rear_scan.range_min)
         merged_scan.range_max = max(self.front_scan.range_max, self.rear_scan.range_max)
         merged_scan.ranges = merged_ranges

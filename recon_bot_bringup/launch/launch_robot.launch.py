@@ -85,7 +85,7 @@ def generate_launch_description():
     return LaunchDescription([
         rsp,
         twist_mux,
-        delayed_controller_manager,
-        delayed_joint_broad_spawner,
-        delayed_velocity_spawner
+        # delayed_controller_manager,
+        # delayed_joint_broad_spawner,
+        # delayed_velocity_spawner
     ])
