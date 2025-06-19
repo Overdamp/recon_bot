@@ -75,7 +75,7 @@ def generate_launch_description():
         launch_arguments={
             'map': map_file,
             'use_sim_time': use_sim_time,
-            'params_file': nav2_params
+            'paragit gms_file': nav2_params
         }.items()
     )
 

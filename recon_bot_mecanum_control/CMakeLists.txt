@@ -21,6 +21,7 @@ install(PROGRAMS
 scripts/mecanum_odometry.py
 scripts/mecanum_controller.py
 scripts/a_joy_cmd_vel.py  
+scripts/test_drive.py
 
 DESTINATION lib/${PROJECT_NAME}
 )
