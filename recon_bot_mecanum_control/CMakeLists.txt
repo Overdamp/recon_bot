@@ -18,7 +18,6 @@ ament_python_install_package(${PROJECT_NAME})
 # Install Python executables
 install(PROGRAMS
 
-scripts/mecanum_odometry.py
 scripts/mecanum_controller.py
 scripts/a_joy_cmd_vel.py  
 scripts/test_drive.py

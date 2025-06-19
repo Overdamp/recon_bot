@@ -25,9 +25,9 @@ class JoystickCommandVelocity(Node):
 
     def joystick_callback(self, joy_msg):
         # Example mapping, change based on joystick configuration
-        linear_x = joy_msg.axes[1] * 1.0 * max_velocity  # Forward/Backward movement
-        linear_y = joy_msg.axes[0] * 1.0 * max_velocity  # Left/Right strafing
-        angular_z = joy_msg.axes[2] * 1.0 * max_velocity # Rotation
+        linear_x = joy_msg.axes[3] * 1.0 * max_velocity  # Forward/Backward movement
+        linear_y = joy_msg.axes[2] * 1.0 * max_velocity  # Left/Right strafing
+        angular_z = joy_msg.axes[0] * 1.0 * max_velocity # Rotation
 
         # Apply low-pass filter
         self.filtered_linear_x = self.alpha * linear_x + (1.0 - self.alpha) * self.filtered_linear_x

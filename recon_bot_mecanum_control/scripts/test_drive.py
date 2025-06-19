@@ -8,11 +8,11 @@ class MecanumControlNode(Node):
     def __init__(self):
         super().__init__('mecanum_control_node')
         self.publisher_ = self.create_publisher(Twist, 'cmd_vel', 10)
-        self.timer = self.create_timer(0.1, self.timer_callback)
+        self.timer = self.create_timer(0.01, self.timer_callback)
         self.state = 'forward'
         self.state_start_time = time.time()
-        self.linear_speed = 0.2  # m/s
-        self.angular_speed = 0.5  # rad/s
+        self.linear_speed = 0.1  # m/s
+        self.angular_speed = 0.15  # rad/s
         self.duration = 2.0  # seconds
 
     def timer_callback(self):
