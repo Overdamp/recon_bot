@@ -14,7 +14,7 @@ class GPIOController(Node):
         # Define GPIO pins (use BCM numbering)
         self.gpio_pins = [23, 24, 13]  # Replace with the actual GPIO pins you are using
         self.gpio_pin = 22  # Pin 22 (BOARD numbering)
-        self.gpio_pin_shutdown = 22  # Pin 22 (BOARD numbering)
+        self.gpio_pin_shutdown = 27  # Pin 22 (BOARD numbering)
 
         # Set up GPIO pins as output
         GPIO.setmode(GPIO.BCM)
@@ -59,11 +59,11 @@ class GPIOController(Node):
             try:
                 # ส่งคำสั่ง shutdown
                 self.get_logger().info('ok')
-                subprocess.run([ 'shutdown', '-h', 'now'], check=True)
+                # subprocess.run([ 'shutdown', '-h', 'now'], check=True)
             except subprocess.CalledProcessError as e:
                 self.get_logger().error('Failed to shutdown: {}'.format(e))
         else:
-            self.get_logger().info('GPIO Pin {} is LOW, no action taken'.format(self.gpio_pin_shutdown))
+            self.get_logger().info('GPIO Pin {} is HIGH, no action taken'.format(self.gpio_pin_shutdown))
         
 
     def destroy_node(self):

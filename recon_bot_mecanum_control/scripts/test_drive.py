@@ -9,7 +9,7 @@ class MecanumControlNode(Node):
         super().__init__('mecanum_control_node')
         self.publisher_ = self.create_publisher(Twist, 'cmd_vel', 10)
         self.timer = self.create_timer(0.01, self.timer_callback)
-        self.state = 'forward'
+        self.state = 'CW'
         self.state_start_time = time.time()
         self.linear_speed = 0.1  # m/s
         self.angular_speed = 0.15  # rad/s
@@ -21,14 +21,18 @@ class MecanumControlNode(Node):
 
         # Change state every 2 seconds
         if current_time - self.state_start_time >= self.duration:
-            if self.state == 'forward':
-                self.state = 'backward'
-            elif self.state == 'backward':
-                self.state = 'left'
-            elif self.state == 'left':
-                self.state = 'right'
-            elif self.state == 'right':
-                self.state = 'forward'
+
+            if self.state == 'CW':
+                self.state = 'CW'
+
+            # if self.state == 'forward':
+            #     self.state = 'backward'
+            # elif self.state == 'backward':
+            #     self.state = 'left'
+            # elif self.state == 'left':
+            #     self.state = 'right'
+            # elif self.state == 'right':
+            #     self.state = 'forward'
             self.state_start_time = current_time
             self.get_logger().info(f'Moving {self.state}')
 
@@ -49,6 +53,15 @@ class MecanumControlNode(Node):
             msg.linear.x = 0.0
             msg.linear.y = -self.linear_speed
             msg.angular.z = 0.0
+
+        elif self.state == 'CW':
+            msg.linear.x = 0.0
+            msg.linear.y = 0.0
+            msg.angular.z = self.angular_speed
+        elif self.state == 'CCW':
+            msg.linear.x = 0.0
+            msg.linear.y = 0.0
+            msg.angular.z = -self.angular_speed
 
         self.publisher_.publish(msg)
 
