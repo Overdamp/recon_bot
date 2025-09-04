@@ -184,17 +184,19 @@ class MecanumBaseController(Node):
 
         if time_since_last_cmd > self.cmd_vel_timeout:
             self.cmd_vel_active = False
-            self.get_logger().info("cmd_vel timeout, maintaining last velocities")
+            self.get_logger().info("cmd_vel timeout, stopping robot")
+            # Reset velocities to zero on timeout
+            self.last_cmd_vel = Twist()
 
         if self.cmd_vel_active and self.enable_active:
             vx = self.last_cmd_vel.linear.x
             vy = self.last_cmd_vel.linear.y
             wz = self.last_cmd_vel.angular.z
         else:
-            # Use last known velocities instead of resetting to zero
-            vx = self.last_cmd_vel.linear.x
-            vy = self.last_cmd_vel.linear.y
-            wz = self.last_cmd_vel.angular.z
+            # Use zero velocities if not active
+            vx = 0.0
+            vy = 0.0
+            wz = 0.0
 
         wheel_speeds = self.mecanum_inverse_kinematics(vx, vy, wz)
         wheel_speeds = [max(min(w, self.max_wheel_omega), -self.max_wheel_omega) for w in wheel_speeds]

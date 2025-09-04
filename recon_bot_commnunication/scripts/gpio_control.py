@@ -6,20 +6,21 @@ import Jetson.GPIO as GPIO
 import subprocess
 import time
 
-
 class GPIOController(Node):
     def __init__(self):
         super().__init__('gpio_controller')
 
         # Define GPIO pins (use BCM numbering)
         self.gpio_pins = [23, 24, 13]  # Replace with the actual GPIO pins you are using
-        self.gpio_pin = 22  # Pin 22 (BOARD numbering)
-        self.gpio_pin_shutdown = 27  # Pin 22 (BOARD numbering)
+        self.gpio_pin_shutdown = 4  # Pin 27 (BCM numbering) for shutdown
 
-        # Set up GPIO pins as output
+        # Set up GPIO pins
         GPIO.setmode(GPIO.BCM)
+        # Configure output pins
         GPIO.setup(self.gpio_pins, GPIO.OUT, initial=GPIO.LOW)
+        # Configure input pin with pull-up resistor
         GPIO.setup(self.gpio_pin_shutdown, GPIO.IN)
+
         # Subscribe to joystick messages
         self.subscription = self.create_subscription(
             Joy,
@@ -30,7 +31,7 @@ class GPIOController(Node):
         self.subscription  # prevent unused variable warning
 
         # Timer to periodically check and print GPIO states
-        self.timer = self.create_timer(0.5, self.check_gpio_states)
+        self.timer = self.create_timer(0.05, self.check_gpio_states)
 
     def joy_callback(self, msg):
         # Map joystick buttons to GPIO pins
@@ -49,28 +50,26 @@ class GPIOController(Node):
     def set_gpio_state(self, gpio_pin, state):
         # Set the GPIO pin to the desired state
         GPIO.output(gpio_pin, state)
-        self.get_logger().info(f"Set GPIO kkkkkkk {gpio_pin} to {'HIGH' if state == GPIO.HIGH else 'LOW'}")
+        # self.get_logger().info(f"Set GPIO {gpio_pin} to {'HIGH' if state == GPIO.HIGH else 'LOW'}")
 
     def check_gpio_states(self):
-        # อ่านค่าสถานะ GPIO
+        # Read GPIO state
         gpio_state = GPIO.input(self.gpio_pin_shutdown)
-        if gpio_state == GPIO.LOW:
-            self.get_logger().info('GPIO Pin {} is LOW, initiating shutdown...'.format(self.gpio_pin_shutdown))
+        if gpio_state == GPIO.HIGH:
+            self.get_logger().info(f'GPIO Pin {self.gpio_pin_shutdown} is HIGH, initiating shutdown...')
             try:
-                # ส่งคำสั่ง shutdown
-                self.get_logger().info('ok')
-                # subprocess.run([ 'shutdown', '-h', 'now'], check=True)
+                # Send shutdown command
+                # self.get_logger().info('ok')
+                subprocess.run(['shutdown', '-h', 'now'], check=True)
             except subprocess.CalledProcessError as e:
-                self.get_logger().error('Failed to shutdown: {}'.format(e))
+                self.get_logger().error(f'Failed to shutdown: {e}')
         else:
-            self.get_logger().info('GPIO Pin {} is HIGH, no action taken'.format(self.gpio_pin_shutdown))
-        
+            self.get_logger().info(f'GPIO Pin {self.gpio_pin_shutdown} is LOW, no action taken')
 
     def destroy_node(self):
         # Cleanup GPIO before exiting
         GPIO.cleanup()
         super().destroy_node()
-
 
 def main(args=None):
     rclpy.init(args=args)
@@ -79,7 +78,5 @@ def main(args=None):
     gpio_controller.destroy_node()
     rclpy.shutdown()
 
-
 if __name__ == '__main__':
     main()
-

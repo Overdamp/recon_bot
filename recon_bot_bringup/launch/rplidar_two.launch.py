@@ -24,11 +24,11 @@ def generate_launch_description():
                 'inverted': False,  # Normal scanning direction
                 'angle_compensate': True,  # Compensate for angle distortion
                 'scan_mode': 'Standard',
-                'sample_rate': 5, 
+                'sample_rate': 10, 
             }],
-            remappings=[
-                ('/scan', '/scan_front'),  # Remap the scan topic for the front RPLIDAR
-            ]
+            # remappings=[
+            #     ('/scan', '/scan_front'),  # Remap the scan topic for the front RPLIDAR
+            # ]
         ),
         
         # Back RPLIDAR
@@ -45,11 +45,11 @@ def generate_launch_description():
                 'inverted': False,  # Normal scanning direction
                 'angle_compensate': True,  # Compensate for angle distortion
                 'scan_mode': 'Standard',
-                'sample_rate': 20, 
+                'sample_rate': 10, 
             }],
-            remappings=[
-                ('/scan', '/scan_back'),  # Remap the scan topic for the back RPLIDAR
-            ]
+            # remappings=[
+            #     ('/scan', '/scan_back'),  # Remap the scan topic for the back RPLIDAR
+            # ]
         ),
         # # Add other nodes or configurations as needed
 

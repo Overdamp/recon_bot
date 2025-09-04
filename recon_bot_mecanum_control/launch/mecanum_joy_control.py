@@ -60,7 +60,7 @@ def generate_launch_description():
     # Return the LaunchDescription with all the nodes inside a list
     return LaunchDescription([
         # joy_node,
-        # joy_cmd_vel_node,
+        joy_cmd_vel_node,
         mecanum_control_node,
         mecanum_joy_control,
         # rviz_node,   

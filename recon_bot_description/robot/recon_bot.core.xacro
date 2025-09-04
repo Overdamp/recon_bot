@@ -62,6 +62,17 @@
       </geometry>
     </collision>
   </link>
+
+    <!-- Joint and Link for the Merged Laser Scan Frame -->
+  <link name="merged_scan_frame">
+  </link>
+
+  <joint name="merged_scan_joint" type="fixed">
+    <parent link="Mobile_Base"/>
+    <child link="merged_scan_frame"/>
+    <origin xyz="0 0 -0.2" rpy="0 0 0"/>
+  </joint>
+
   <link
     name="Wheel_LF">
     <inertial>

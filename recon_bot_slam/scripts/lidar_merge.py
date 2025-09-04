@@ -32,6 +32,12 @@ class LaserScanMerger(Node):
         self.front_scan = None
         self.rear_scan = None
 
+        # Angle limits for front and rear LiDAR (กำหนดขอบเขตมุมที่ต้องการ)
+        self.front_angle_min_limit = math.radians(-180)   # -123 องศา
+        self.front_angle_max_limit = math.radians(180)      # 4 องศา
+        self.rear_angle_min_limit  = math.radians(-90)   # -123 องศา
+        self.rear_angle_max_limit  = math.radians(172)      # 4 องศา
+
         # Timer for merging
         self.timer = self.create_timer(0.05, self.merge_scans)  # 20 Hz merge rate
 
@@ -69,26 +75,27 @@ class LaserScanMerger(Node):
         if self.front_scan is None or self.rear_scan is None:
             return
 
-        # Prepare to collect all points
         points_x = []
         points_y = []
 
-        # Transform front scan points
+        # Transform front scan points with angle limit
         angle = self.front_scan.angle_min
         for r in self.front_scan.ranges:
             if self.front_scan.range_min < r < self.front_scan.range_max:
-                x, y = self.transform_point(r, angle, self.front_offset, self.front_upside_down)
-                points_x.append(x)
-                points_y.append(y)
+                if self.front_angle_min_limit <= angle <= self.front_angle_max_limit:
+                    x, y = self.transform_point(r, angle, self.front_offset, self.front_upside_down)
+                    points_x.append(x)
+                    points_y.append(y)
             angle += self.front_scan.angle_increment
 
-        # Transform rear scan points
+        # Transform rear scan points with angle limit
         angle = self.rear_scan.angle_min
         for r in self.rear_scan.ranges:
             if self.rear_scan.range_min < r < self.rear_scan.range_max:
-                x, y = self.transform_point(r, angle, self.rear_offset, self.rear_upside_down)
-                points_x.append(x)
-                points_y.append(y)
+                if self.rear_angle_min_limit <= angle <= self.rear_angle_max_limit:
+                    x, y = self.transform_point(r, angle, self.rear_offset, self.rear_upside_down)
+                    points_x.append(x)
+                    points_y.append(y)
             angle += self.rear_scan.angle_increment
 
         # Convert merged points back into LaserScan
@@ -113,7 +120,7 @@ class LaserScanMerger(Node):
         # Create merged scan message
         merged_scan = LaserScan()
         merged_scan.header.stamp = self.get_clock().now().to_msg()
-        merged_scan.header.frame_id = 'Mobile_Base'
+        merged_scan.header.frame_id = 'merged_scan_frame'
         merged_scan.angle_min = angle_min
         merged_scan.angle_max = angle_max
         merged_scan.angle_increment = angle_increment
