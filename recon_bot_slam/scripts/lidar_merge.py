@@ -33,10 +33,10 @@ class LaserScanMerger(Node):
         self.rear_scan = None
 
         # Angle limits for front and rear LiDAR (กำหนดขอบเขตมุมที่ต้องการ)
-        self.front_angle_min_limit = math.radians(-180)   # -123 องศา
-        self.front_angle_max_limit = math.radians(180)      # 4 องศา
-        self.rear_angle_min_limit  = math.radians(-90)   # -123 องศา
-        self.rear_angle_max_limit  = math.radians(172)      # 4 องศา
+        self.front_angle_min_limit = math.radians(-180)   # -180 องศา
+        self.front_angle_max_limit = math.radians(180)      # 180 องศา
+        self.rear_angle_min_limit  = math.radians(-70)   # -70 องศา ขวาบน
+        self.rear_angle_max_limit  = math.radians(172)      # 172 องศา
 
         # Timer for merging
         self.timer = self.create_timer(0.05, self.merge_scans)  # 20 Hz merge rate

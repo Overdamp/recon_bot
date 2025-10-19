@@ -124,7 +124,7 @@
     <child
       link="Wheel_LF" />
     <axis
-      xyz="0 0 1" />
+      xyz="0 0 -1" />
   </joint>
   <link
     name="Roller_LF_1">
@@ -601,7 +601,7 @@
     <child
       link="Wheel_LR" />
     <axis
-      xyz="0 0 1" />
+      xyz="0 0 -1" />
   </joint>
   <link
     name="Roller_LR_1">
@@ -1078,7 +1078,7 @@
     <child
       link="Wheel_RF" />
     <axis
-      xyz="0 0 1" />
+      xyz="0 0 -1" />
   </joint>
   <link
     name="Roller_RF_1">
@@ -1555,7 +1555,7 @@
     <child
       link="Wheel_RR" />
     <axis
-      xyz="0 0 1" />
+      xyz="0 0 -1" />
   </joint>
   <link
     name="Roller_RR_1">
