@@ -51,5 +51,18 @@
         "/opt/ros/humble/lib/python3.10/site-packages",
         "/opt/ros/humble/local/lib/python3.10/dist-packages"
     ],
-    "cmake.sourceDirectory": "/home/fiborobotlab/Ros2_directoy/recon_ws/src/recon_bot_aruco_pose_estimator"
+    "cmake.sourceDirectory": "/home/fiborobotlab/Ros2_directoy/recon_ws/src/recon_bot_aruco_pose_estimator",
+    "files.associations": {
+        "array": "cpp",
+        "hash_map": "cpp",
+        "hash_set": "cpp",
+        "bitset": "cpp",
+        "string_view": "cpp",
+        "rope": "cpp",
+        "slist": "cpp",
+        "initializer_list": "cpp",
+        "regex": "cpp",
+        "utility": "cpp",
+        "valarray": "cpp"
+    }
 }
