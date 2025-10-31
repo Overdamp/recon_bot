@@ -19,13 +19,14 @@
   <link name="base_footprint">
     <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 3.14" />
   </link>
-    <joint name="base_footprint_to_Mobile_Base" type="fixed">
+    <joint name="Mobile_Base_to_base_footprint" type="fixed">
     <parent link="base_footprint"/>
     <child link="Mobile_Base"/>
     <origin rpy="0 0 0" xyz="0 0 0.48"/>
   </joint>
+  
   <link
-    name="Mobile_Base">
+    name="Mobile_Base"> <!-- name_of_my_robot_base_link -->
     <inertial>
       <origin
         xyz="0.00270794889201253 0.000926242394781646 -0.128115066829716"
@@ -70,7 +71,7 @@
   <joint name="merged_scan_joint" type="fixed">
     <parent link="Mobile_Base"/>
     <child link="merged_scan_frame"/>
-    <origin xyz="0 0 -0.2" rpy="0 0 0"/>
+    <origin xyz="0 0 -0.3" rpy="0 0 0"/>
   </joint>
 
   <link

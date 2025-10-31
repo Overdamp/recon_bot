@@ -43,7 +43,7 @@ class JoystickCommandVelocity(Node):
             cmd_vel_msg.linear.x = self.filtered_linear_x
             cmd_vel_msg.linear.y = self.filtered_linear_y
             cmd_vel_msg.angular.z = self.filtered_angular_z
-            print(f"cmd_vel_msg: linear.x={cmd_vel_msg.linear.x}, linear.y={cmd_vel_msg.linear.y}, angular.z={cmd_vel_msg.angular.z}")
+            # print(f"cmd_vel_msg: linear.x={cmd_vel_msg.linear.x}, linear.y={cmd_vel_msg.linear.y}, angular.z={cmd_vel_msg.angular.z}")
             
             self.cmd_vel_pub.publish(cmd_vel_msg)
         except Exception as e:

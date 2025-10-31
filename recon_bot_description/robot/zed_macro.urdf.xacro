@@ -135,44 +135,7 @@
       <origin xyz="${optical_offset_x} ${baseline/2} 0" rpy="0 0 0" />
     </joint>
 
-    <link name="${name}_left_camera_optical_frame"/>
-    <joint name="${name}_left_camera_optical_joint" type="fixed">
-      <origin xyz="0 0 0" rpy="-${M_PI/2} 0.0 -${M_PI/2}"/>
-      <parent link="${name}_left_camera_frame"/>
-      <child link="${name}_left_camera_optical_frame"/>
-    </joint>
-
-    <!-- Right Camera -->
-    <link name="${name}_right_camera_frame">
-      <xacro:if value="${model == 'virtual'}">
-        <visual>
-          <origin xyz="0 0 0" rpy="0 0 0"/>
-          <geometry>
-            <mesh filename="package://zed_interfaces/meshes/${model}.stl" />
-          </geometry>
-          <material name="${model}_mat" />
-        </visual>      
-        <collision>
-          <origin xyz="0 0 0" rpy="0 0 0"/>
-          <geometry>
-            <mesh filename="package://zed_interfaces/meshes/${model}.stl" />
-          </geometry>
-        </collision>
-      </xacro:if>
-    </link>
-    <joint name="${name}_right_camera_joint" type="fixed">
-      <parent link="${name}_camera_center"/>
-      <child link="${name}_right_camera_frame"/>
-      <origin xyz="${optical_offset_x} -${baseline/2} 0" rpy="0 0 0" />
-    </joint>
-
-    <link name="${name}_right_camera_optical_frame"/>
-    <joint name="${name}_right_camera_optical_joint" type="fixed">
-      <origin xyz="0 0 0" rpy="-${M_PI/2} 0.0 -${M_PI/2}"/>
-      <parent link="${name}_right_camera_frame"/>
-      <child link="${name}_right_camera_optical_frame"/>
-    </joint>
-
+   
     <!-- ZED2 Sensors -->
     <xacro:if value="${model == 'zed2'}">
       <link name="${name}_mag_link" />

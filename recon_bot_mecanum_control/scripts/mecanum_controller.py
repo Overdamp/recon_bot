@@ -100,7 +100,7 @@ class MecanumBaseController(Node):
         # Enable button logic (optional)
         self.enable_active = False if self.enable_axis >= 0 else True
 
-        # Subscribers
+        # === Subscribers ===
         self.joint_state_sub = self.create_subscription(
             JointState, '/joint_states', self.joint_state_callback, 10)
         self.cmd_vel_sub = self.create_subscription(
@@ -109,7 +109,7 @@ class MecanumBaseController(Node):
         # Publishers
         self.joint_cmd_pub = self.create_publisher(
             Float64MultiArray, '/velocity_controller/commands', 10)
-        self.odom_pub = self.create_publisher(Odometry, '/odom', 10)
+        self.odom_pub = self.create_publisher(Odometry, '/wheel_odom', 10)
 
         # TF broadcaster
         self.tf_broadcaster = TransformBroadcaster(self)
@@ -266,7 +266,7 @@ class MecanumBaseController(Node):
         log_now = self.get_clock().now()
         log_dt = (log_now - self.last_log_time).nanoseconds * 1e-9
         if log_dt > 0.5: # Throttle logging to ~2Hz
-            self.get_logger().info(f"Status: {status} | CmdVel(m/s,r/s): vx={vx:.2f},vy={vy:.2f},wz={wz:.2f}")
+            # self.get_logger().info(f"Status: {status} | CmdVel(m/s,r/s): vx={vx:.2f},vy={vy:.2f},wz={wz:.2f}")
             # Format wheel commands nicely
             wheel_cmd_str = ', '.join([f"{cmd:.2f}" for cmd in dxl_cmds])
             self.get_logger().info(f"  -> WheelCmd(r/s): [{wheel_cmd_str}]")
@@ -464,18 +464,18 @@ class MecanumBaseController(Node):
         self.odom_pub.publish(odom_msg)
 
         # TF broadcast
-        t = TransformStamped()
-        t.header.stamp = now.to_msg()
-        t.header.frame_id = 'odom'
-        t.child_frame_id = 'base_footprint'
-        t.transform.translation.x = float(self.x)
-        t.transform.translation.y = float(self.y)
-        t.transform.translation.z = 0.0
-        t.transform.rotation = odom_msg.pose.pose.orientation # Use the calculated quaternion
-        try:
-            self.tf_broadcaster.sendTransform(t)
-        except Exception as e:
-            self.get_logger().error(f"Failed to send TF transform: {e}")
+        # t = TransformStamped()
+        # t.header.stamp = now.to_msg()
+        # t.header.frame_id = 'odom'
+        # t.child_frame_id = 'base_footprint'
+        # t.transform.translation.x = float(self.x)
+        # t.transform.translation.y = float(self.y)
+        # t.transform.translation.z = 0.0
+        # t.transform.rotation = odom_msg.pose.pose.orientation # Use the calculated quaternion
+        # try:
+        #     self.tf_broadcaster.sendTransform(t)
+        # except Exception as e:
+        #     self.get_logger().error(f"Failed to send TF transform: {e}")
 
 
     def shutdown(self):

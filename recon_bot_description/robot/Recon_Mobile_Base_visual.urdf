@@ -59,11 +59,11 @@
     </collision>
   </link>
 
-  <joint name="basefootprint_to_base" type="fixed">
+  <!-- <joint name="basefootprint_to_base" type="fixed">
     <parent link="base_footprint"/>
     <child link="Mobile_Base"/>
     <origin rpy="0 0 0" xyz="0 0 0.5"/>
-  </joint>
+  </joint> -->
 
   <link
     name="Wheel_LF">

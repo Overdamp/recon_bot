@@ -6,12 +6,11 @@
     <xacro:include filename="$(find recon_bot_description)/robot/lidar.xacro"/>
     <xacro:include filename="$(find recon_bot_description)/robot/ros2_control.xacro" />
     <xacro:recon_control name="recon_control" />
-    
-    <!-- Arguments for ZED Camera -->
+
     <!-- Arguments for ZED Camera -->
     <xacro:arg name="camera_name" default="zed" />
     <xacro:arg name="camera_model" default="zed2" />
-    <xacro:arg name="use_zed_localization" default="false" />
+    <xacro:arg name="use_zed_localization" default="false" /> <!-- สำคัญ! -->
     <xacro:arg name="custom_baseline"  default="0.0" />
 
     <!-- If GNSS fusion is enabled the position of the antenna with respect to the camera mount point is required -->
@@ -27,16 +26,16 @@
     
     <!-- Joint to connect the ZED Camera to the robot -->
     <xacro:if value="$(arg use_zed_localization)">
-      <!-- ZED Localization: camera_link is the parent, Mobile_Base is the child -->
+      <!-- ZED Localization: camera_link is the parent, Mobile_Base is the child --> <!-- กรณีใช้ ZED เป็น localization หลัก (ไม่แนะนำ) -->
       <joint name="$(arg camera_name)_joint" type="fixed">
-        <parent link="Mobile_Base"/> <!-- Ensure Mobile_Base is defined in the included files -->
-        <child link="$(arg camera_name)_camera_link"/> <!-- Ensure zed_camera_link is defined in the ZED macro -->
-        <origin xyz="0.265 0 -0.085" rpy="0 0 0"/>
+        <parent link="$(arg camera_name)_camera_link"/> <!-- Ensure Mobile_Base is defined in the included files -->
+        <child link="Mobile_Base"/> <!-- Ensure zed_camera_link is defined in the ZED macro -->
+        <origin xyz="-0.265 0 0.085" rpy="0 0 0"/>
       </joint>
     </xacro:if>
     
     <xacro:unless value="$(arg use_zed_localization)">
-      <!-- No ZED Localization: camera_link is the child, Mobile_Base is the parent -->
+      <!-- No ZED Localization: camera_link is the child, Mobile_Base is the parent --> <!-- กรณีใช้ VIO + EKF (แนะนำ) -->
       <joint name="$(arg camera_name)_joint" type="fixed">
         <parent link="Mobile_Base"/>
         <child link="$(arg camera_name)_camera_link"/>
