@@ -29,6 +29,7 @@ DESTINATION lib/${PROJECT_NAME}
 install(DIRECTORY
   launch
   meshes
+  meshes2
   robot
   rviz
   config

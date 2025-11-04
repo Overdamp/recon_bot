@@ -27,7 +27,7 @@ def generate_launch_description():
     robot_description_path = os.path.join(get_package_share_directory(
                                     'recon_bot_description'), 
                                     'robot',
-                                    'robot.urdf.xacro')
+                                    'recon_bot.urdf2.xacro')
     
     robot_description = xacro.process_file(robot_description_path).toxml()
 

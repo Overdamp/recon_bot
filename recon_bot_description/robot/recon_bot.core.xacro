@@ -47,7 +47,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://recon_bot_description/meshes/Mobile_Base.STL" />
+          filename="package://recon_bot_description/meshes2/Mobile_Base_visual.stl" />
       </geometry>
       <material
         name="orange">
@@ -96,7 +96,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://recon_bot_description/meshes/Wheel_LF.STL" />
+          filename="package://recon_bot_description/meshes2/Wheel_LF_visual.stl" />
       </geometry>
       <material
         name="">
@@ -573,7 +573,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://recon_bot_description/meshes/Wheel_LR.STL" />
+          filename="package://recon_bot_description/meshes2/Wheel_LR_visual.stl" />
       </geometry>
       <material
         name="">
@@ -1050,7 +1050,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://recon_bot_description/meshes/Wheel_RF.STL" />
+          filename="package://recon_bot_description/meshes2/Wheel_RF_visual.stl" />
       </geometry>
       <material
         name="">
@@ -1527,7 +1527,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://recon_bot_description/meshes/Wheel_RR.STL" />
+          filename="package://recon_bot_description/meshes2/Wheel_RR_visual.stl" />
       </geometry>
       <material
         name="">
@@ -2004,7 +2004,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://recon_bot_description/meshes/Pin_Head_L.STL" />
+          filename="package://recon_bot_description/meshes2/Pin_Head_L_visual.stl" />
       </geometry>
       <material
         name="">
@@ -2062,7 +2062,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://recon_bot_description/meshes/Pin_Head_R.STL" />
+          filename="package://recon_bot_description/meshes2/Pin_Head_R_visual.stl" />
       </geometry>
       <material
         name="">

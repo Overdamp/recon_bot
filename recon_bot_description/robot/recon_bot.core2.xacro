@@ -1,0 +1,408 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="recon_bot">
+
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+  <xacro:include filename="$(find recon_bot_description)/robot/materials.xacro"/>
+
+  <!-- <link name="odom">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 3.14" />
+  </link>
+
+  <joint name="odom_to_basefootprint" type="fixed">
+    <parent link="odom"/>
+    <child link="base_footprint"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+  </joint> -->
+
+  <link name="base_footprint">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 3.14" />
+  </link>
+    <joint name="base_footprint_to_Mobile_Base" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="Mobile_Base"/>
+    <origin rpy="0 0 0" xyz="0 0 0.48"/>
+  </joint>
+  <link
+    name="Mobile_Base">
+    <inertial>
+      <origin
+        xyz="0.00270794889201253 0.000926242394781646 -0.128115066829716"
+        rpy="0 0 0" />
+      <mass
+        value="13.0496430135498" />
+      <inertia
+        ixx="0.078428885336732"
+        ixy="-0.000424260125405416"
+        ixz="-4.99662127671641E-08"
+        iyy="0.101100659734584"
+        iyz="-1.90955777107521E-07"
+        izz="0.156190952643998" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes2/Mobile_Base_visual.stl" />
+      </geometry>
+      <material
+        name="orange">
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Mobile_Base.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+    <!-- Joint and Link for the Merged Laser Scan Frame -->
+  <link name="merged_scan_frame">
+  </link>
+
+  <joint name="merged_scan_joint" type="fixed">
+    <parent link="Mobile_Base"/>
+    <child link="merged_scan_frame"/>
+    <origin xyz="0 0 -0.2" rpy="0 0 0"/>
+  </joint>
+
+  <link
+    name="Wheel_LF">
+    <inertial>
+      <origin
+        xyz="-3.68604325448052E-05 8.74696815872378E-06 -0.000155511793327234"
+        rpy="0 0 0" />
+      <mass
+        value="0.77404110274982" />
+      <inertia
+        ixx="0.00055506881532458"
+        ixy="2.15732280355355E-07"
+        ixz="-1.8565434672159E-10"
+        iyy="0.000555930826369469"
+        iyz="2.2728326005673E-10"
+        izz="0.00098890621085001" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes2/Wheel_LF_visual.stl" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.898039215686275 0.917647058823529 0.929411764705882 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Wheel_LF.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="J_Wheel_LF"
+    type="continuous">
+    <origin
+      xyz="0.243373703143014 0.196999999999994 -0.410500520826094"
+      rpy="1.5707963267949 -0.698892577239709 0" />
+    <parent
+      link="Mobile_Base" />
+    <child
+      link="Wheel_LF" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  
+  <link
+    name="Wheel_LR">
+    <inertial>
+      <origin
+        xyz="2.28750886412388E-05 4.38499760812283E-05 -0.000160556590807603"
+        rpy="0 0 0" />
+      <mass
+        value="0.286935584537691" />
+      <inertia
+        ixx="0.000205567523367468"
+        ixy="4.86825936008885E-10"
+        ixz="5.22777710432301E-10"
+        iyy="0.000205922237695722"
+        iyz="8.40224944649351E-11"
+        izz="0.000366267561115225" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes2/Wheel_LR_visual.stl" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Wheel_LR.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="J_Wheel_LR"
+    type="continuous">
+    <origin
+      xyz="-0.243373703143012 0.197 -0.410500520826101"
+      rpy="1.5707963267949 -0.479686767241463 0" />
+    <parent
+      link="Mobile_Base" />
+    <child
+      link="Wheel_LR" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  
+  <link
+    name="Wheel_RF">
+    <inertial>
+      <origin
+        xyz="2.28374030626366E-05 4.3913212168234E-05 -0.000160482316143507"
+        rpy="0 0 0" />
+      <mass
+        value="0.286934748749192" />
+      <inertia
+        ixx="0.00020556617413596"
+        ixy="1.10285044985226E-14"
+        ixz="5.73034041739461E-10"
+        iyy="0.000205921402223248"
+        iyz="1.10288592805437E-14"
+        izz="0.000366265336032199" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes2/Wheel_RF_visual.stl" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Wheel_RF.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="J_Wheel_RF"
+    type="continuous">
+    <origin
+      xyz="0.243373703143008 -0.197 -0.410500520826103"
+      rpy="-1.57079632679488 0.943014448657122 0" />
+    <parent
+      link="Mobile_Base" />
+    <child
+      link="Wheel_RF" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  
+  <link
+    name="Wheel_RR">
+    <inertial>
+      <origin
+        xyz="-3.6897172044803E-05 8.73176160257061E-06 -0.000155533212772396"
+        rpy="0 0 0" />
+      <mass
+        value="0.774041107399352" />
+      <inertia
+        ixx="0.000555071231306981"
+        ixy="2.13316469015239E-07"
+        ixz="2.79563667310414E-11"
+        iyy="0.000555928410599816"
+        iyz="-2.88355488444584E-10"
+        izz="0.000988906210952547" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes2/Wheel_RR_visual.stl" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.898039215686275 0.917647058823529 0.929411764705882 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Wheel_RR.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="J_Wheel_RR"
+    type="continuous">
+    <origin
+      xyz="-0.243373703143013 -0.197 -0.410500520826098"
+      rpy="1.5707963267949 0.0225283753887193 -3.14159265358962" />
+    <parent
+      link="Mobile_Base" />
+    <child
+      link="Wheel_RR" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  
+  <link
+    name="Pin_Head_L">
+    <inertial>
+      <origin
+        xyz="2.1559243279512E-10 -0.0321906491972987 -0.0458464269660464"
+        rpy="0 0 0" />
+      <mass
+        value="1.48466823730085" />
+      <inertia
+        ixx="0.0119893258639138"
+        ixy="-6.29977450022121E-13"
+        ixz="-2.11071844261683E-11"
+        iyy="0.00224564184360829"
+        iyz="-6.50425726210649E-11"
+        izz="0.00987450416832168" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes2/Pin_Head_L_visual.stl" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.898039215686275 0.917647058823529 0.929411764705882 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Pin_Head_L.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="J_Pin_Head_L"
+    type="fixed">
+    <origin
+      xyz="0.04 0.2352 0.06"
+      rpy="4.71365 -1.5708 0" />
+    <parent
+      link="Mobile_Base" />
+    <child
+      link="Pin_Head_L" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="0.07"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="Pin_Head_R">
+    <inertial>
+      <origin
+        xyz="-2.1559198870591E-10 0.0321906491972989 -0.0458464269660465"
+        rpy="0 0 0" />
+      <mass
+        value="1.48466823730085" />
+      <inertia
+        ixx="0.0119893258639138"
+        ixy="-6.29978075149543E-13"
+        ixz="2.1107197896332E-11"
+        iyy="0.00224564184360829"
+        iyz="6.50425742700792E-11"
+        izz="0.00987450416832168" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes2/Pin_Head_R_visual.stl" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.898039215686275 0.917647058823529 0.929411764705882 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://recon_bot_description/meshes/Pin_Head_R.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="J_Pin_Head_R"
+    type="fixed">
+    <origin
+      xyz="-0.04 -0.2335 0.06"
+      rpy="1.5708 1.5708 0" />
+    <parent
+      link="Mobile_Base" />
+    <child
+      link="Pin_Head_R" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="0.07"
+      effort="0"
+      velocity="0" />
+  </joint>
+</robot>
