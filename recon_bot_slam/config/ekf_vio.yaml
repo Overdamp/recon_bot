@@ -1,9 +1,11 @@
 ekf_filter_node:
   ros__parameters:
-    frequency: 50.0
+    frequency: 20.0
     two_d_mode: true
     publish_tf: true
     publish_acceleration: true
+    print_diagnostics: true   # ต้องมี!
+    sensor_timeout: 0.2   # จาก default 0.1
 
     map_frame: map
     odom_frame: odom
@@ -19,7 +21,7 @@ ekf_filter_node:
                    false, false, false]   # ax, ay, az
     odom0_differential: true
     odom0_relative: true
-    odom0_queue_size: 10
+    odom0_queue_size: 20
 
     # === IMU (ZED) ===
     imu0: /imu/data
@@ -29,7 +31,7 @@ ekf_filter_node:
                   false, false, true,
                   true,  true,  true]
     imu0_remove_gravitational_acceleration: true
-    imu0_queue_size: 10
+    imu0_queue_size: 20
 
     # === VIO (ZED) ===
     odom1: /camera_odom
@@ -40,4 +42,4 @@ ekf_filter_node:
                    false, false, false]
     odom1_differential: false
     odom1_relative: false
-    odom1_queue_size: 10
+    odom1_queue_size: 20

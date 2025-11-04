@@ -69,7 +69,9 @@ def generate_launch_description():
     EKF_node = Node(
             package='robot_localization',
             executable='ekf_node',
-            parameters=[os.path.join(package_name_slam,'config', 'ekf_vio.yaml')]
+            parameters=[os.path.join(package_name_slam,'config', 'ekf_vio.yaml')],
+            remappings=[('odometry/filtered', '/odom')]
+            
         )
 
         # 5. slam_toolbox
@@ -96,6 +98,6 @@ def generate_launch_description():
         mecanum_control_node,
         mecanum_joy_control,
         EKF_node ,
-        slam_toolbox_node ,
+        # slam_toolbox_node ,
         # rviz_node,   
     ])

@@ -22,3 +22,9 @@ velocity_controller:
     state_interfaces:
       - position
       - velocity
+
+    gains:
+      J_Wheel_RR: {p: 2.2, d: 0.12}
+      J_Wheel_LR: {p: 2.2, d: 0.12}
+      J_Wheel_RF: {p: 2.2, d: 0.12}
+      J_Wheel_LF: {p: 2.2, d: 0.12}
