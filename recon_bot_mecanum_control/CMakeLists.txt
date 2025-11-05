@@ -21,10 +21,7 @@ install(PROGRAMS
 scripts/mecanum_controller.py
 scripts/a_joy_cmd_vel.py  
 scripts/test_drive.py
-<<<<<<< Updated upstream
 scripts/motor_test_node.py
-=======
->>>>>>> Stashed changes
 
 DESTINATION lib/${PROJECT_NAME}
 )

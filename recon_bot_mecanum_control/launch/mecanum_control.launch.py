@@ -10,7 +10,7 @@ def generate_launch_description():
 
     # Define the paths for various files
     rviz_config = os.path.join(get_package_share_directory(package_name), "rviz", f"{robot_name}config.rviz")
-    robot_description = os.path.join(get_package_share_directory(package_name), "robot", f"{robot_name}.urdf.xacro")
+    robot_description = os.path.join(get_package_share_directory(package_name), "robot", f"{robot_name}.urdf2.xacro")
     robot_description_config = xacro.process_file(robot_description)
 
     # Define controller configuration file path

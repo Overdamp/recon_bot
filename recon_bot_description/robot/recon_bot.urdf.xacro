@@ -6,19 +6,11 @@
     <xacro:include filename="$(find recon_bot_description)/robot/lidar.xacro"/>
     <xacro:include filename="$(find recon_bot_description)/robot/ros2_control.xacro" />
     <xacro:recon_control name="recon_control" />
-<<<<<<< Updated upstream
 
     <!-- Arguments for ZED Camera -->
     <xacro:arg name="camera_name" default="zed" />
     <xacro:arg name="camera_model" default="zed2" />
     <xacro:arg name="use_zed_localization" default="false" /> <!-- สำคัญ! -->
-=======
-    
-    <!-- Arguments for ZED Camera -->
-    <xacro:arg name="camera_name" default="zed" />
-    <xacro:arg name="camera_model" default="zed2i" />
-    <xacro:arg name="use_zed_localization" default="false" />
->>>>>>> Stashed changes
     <xacro:arg name="custom_baseline"  default="0.0" />
 
     <!-- If GNSS fusion is enabled the position of the antenna with respect to the camera mount point is required -->
