@@ -18,6 +18,18 @@ def generate_launch_description():
     robot_description = os.path.join(get_package_share_directory(package_name), "robot", f"{robot_name}.urdf.xacro")
     robot_description_config = xacro.process_file(robot_description)
 
+    ekf_config_path = os.path.join(
+        get_package_share_directory(package_name_slam), 
+        'config', 
+        'ekf_vio.yaml'
+    )
+    
+    slam_config_path = os.path.join(
+        get_package_share_directory(package_name_slam), 
+        'config', 
+        'slam_params_online_sync.yaml'
+    )
+
     # Define controller configuration file path
     # controller_config = os.path.join(get_package_share_directory(package_name), "config", "mecanum_controllers.yaml")
 
@@ -69,7 +81,7 @@ def generate_launch_description():
     EKF_node = Node(
             package='robot_localization',
             executable='ekf_node',
-            parameters=[os.path.join(package_name_slam,'config', 'ekf_vio.yaml')],
+            parameters=[ekf_config_path],
             remappings=[('odometry/filtered', '/odom')]
             
         )
@@ -78,7 +90,7 @@ def generate_launch_description():
     slam_toolbox_node = Node(
             package='slam_toolbox',
             executable='async_slam_toolbox_node',
-            parameters=[os.path.join(package_name_slam,'config', 'slam_params_online_sync.yaml')]
+            parameters=[slam_config_path]
         )
 
     rviz_node = Node(
