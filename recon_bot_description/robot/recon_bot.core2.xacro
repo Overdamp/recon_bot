@@ -405,4 +405,13 @@
       effort="0"
       velocity="0" />
   </joint>
+  
+  <!-- World frame (root for TF tree) -->
+<link name="world"/>
+<joint name="world_to_map" type="fixed">
+  <parent link="world"/>
+  <child link="map"/>
+  <origin xyz="0 0 0" rpy="0 0 0"/>
+</joint>
+
 </robot>

@@ -1,0 +1,17 @@
+amcl:
+  ros__parameters:
+    base_frame_id: "Mobile_Base"  # <-- remap
+
+controller_server:
+  ros__parameters:
+    base_frame_id: "Mobile_Base"
+
+local_costmap:
+  local_costmap:
+    ros__parameters:
+      robot_base_frame: "Mobile_Base"
+
+global_costmap:
+  global_costmap:
+    ros__parameters:
+      robot_base_frame: "Mobile_Base"
