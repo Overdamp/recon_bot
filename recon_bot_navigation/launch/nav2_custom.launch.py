@@ -1,5 +1,5 @@
 import os
-from ament_index_python.packages import get_package_share_directory  # <-- เพิ่มบรรทัดนี้!
+from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
@@ -13,13 +13,20 @@ def generate_launch_description():
         'config',
         'slam_map.yaml'
     )
+    
+    # Path to params file
+    params_file = os.path.join(
+        get_package_share_directory('recon_bot_navigation'),
+        'config',
+        'nav2_params.yaml'
+    )
 
-    # Include official Nav2 launch (จาก nav2_bringup)
+    # Include official Nav2 launch (from nav2_bringup)
     return LaunchDescription([
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource([
                 PathJoinSubstitution([
-                    FindPackageShare('nav2_bringup'),  # <-- ถูกต้อง: nav2_bringup
+                    FindPackageShare('nav2_bringup'),
                     'launch',
                     'navigation_launch.py'
                 ])
@@ -27,12 +34,8 @@ def generate_launch_description():
             launch_arguments={
                 'map': map_yaml,
                 'use_sim_time': 'false',
-                'params_file': PathJoinSubstitution([
-                    FindPackageShare('nav2_bringup'),
-                    'params',
-                    'nav2_params.yaml'
-                ]),
-                'base_link_frame': 'base_footprint'  # remap base_link → Mobile_Base
+                'params_file': params_file,
+                # 'base_link_frame': 'base_footprint' # Removed as it's handled in params
             }.items()
         )
     ])
