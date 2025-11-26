@@ -78,4 +78,4 @@ We have designed a standard experimental procedure to validate the robot's holon
 *   `recon_bot_aruco_pose_estimator`: Marker detection (Optional).
 
 ## 📝 License
-[Your License Here]
+Thanatchai Wongjird
