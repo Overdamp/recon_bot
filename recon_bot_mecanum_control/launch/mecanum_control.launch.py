@@ -2,16 +2,38 @@ import os
 import xacro
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
+from launch.actions import DeclareLaunchArgument
 from launch_ros.actions import Node
 
 def generate_launch_description():
     robot_name = "recon_bot"
     package_name = f"{robot_name}_description"
+    
+    camera_name_launch_arg = DeclareLaunchArgument(
+        'camera_name',
+        default_value='zed',
+        description='Name of the ZED camera (e.g. zed, zed_mobile)'
+    )
 
     # Define the paths for various files
     rviz_config = os.path.join(get_package_share_directory(package_name), "rviz", f"{robot_name}config.rviz")
     robot_description = os.path.join(get_package_share_directory(package_name), "robot", f"{robot_name}.urdf2.xacro")
-    robot_description_config = xacro.process_file(robot_description)
+    
+    # Capture the camera_name argument
+    from launch.substitutions import LaunchConfiguration
+    camera_name_arg = LaunchConfiguration('camera_name', default='zed')
+    
+    # We need to process xacro with the argument. 
+    # Since LaunchConfiguration is not resolved until runtime, we usually use Command or load it differently.
+    # However, for simplicity in this script structure, we can use Command or assume a default if running directly.
+    # A better way for xacro in launch files is using Command.
+    
+    from launch.substitutions import Command, PathJoinSubstitution
+    
+    robot_description_content = Command([
+        'xacro ', robot_description,
+        ' camera_name:=', camera_name_arg
+    ])
 
     # Define controller configuration file path
     controller_config = os.path.join(get_package_share_directory(package_name), "config", "mecanum_controllers.yaml")
@@ -21,7 +43,7 @@ def generate_launch_description():
         package="controller_manager",
         executable="ros2_control_node",
         parameters=[
-            {"robot_description": robot_description_config.toxml()},
+            {"robot_description": robot_description_content},
             controller_config
         ],
         output={"stdout": "screen", "stderr": "screen"},
@@ -45,7 +67,7 @@ def generate_launch_description():
         package="robot_state_publisher",
         executable="robot_state_publisher",
         name="robot_state_publisher",
-        parameters=[{"robot_description": robot_description_config.toxml()}],
+        parameters=[{"robot_description": robot_description_content}],
         remappings=[('joint_states', '/joint_states')],
         output="screen"
     )
@@ -60,6 +82,7 @@ def generate_launch_description():
 
     # Return the LaunchDescription with all the nodes inside a list
     return LaunchDescription([
+        camera_name_launch_arg,
         controller_manager_node,
         joint_state_broadcaster_node,
         velocity_controller_node,

@@ -36,7 +36,8 @@ def generate_launch_description():
     mecanum_joy_control = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([os.path.join(
             get_package_share_directory(package_name_control), 'launch', 'mecanum_control.launch.py'
-        )])
+        )]),
+        launch_arguments={'camera_name': 'zed_mobile'}.items()
     )
 
     mecanum_rplidar_merge = IncludeLaunchDescription(
