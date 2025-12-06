@@ -4,6 +4,7 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch_ros.actions import Node
+from launch_ros.parameter_descriptions import ParameterValue
 
 def generate_launch_description():
     robot_name = "recon_bot"
@@ -43,7 +44,7 @@ def generate_launch_description():
         package="controller_manager",
         executable="ros2_control_node",
         parameters=[
-            {"robot_description": robot_description_content},
+            {"robot_description": ParameterValue(robot_description_content, value_type=str)},
             controller_config
         ],
         output={"stdout": "screen", "stderr": "screen"},
@@ -67,7 +68,7 @@ def generate_launch_description():
         package="robot_state_publisher",
         executable="robot_state_publisher",
         name="robot_state_publisher",
-        parameters=[{"robot_description": robot_description_content}],
+        parameters=[{"robot_description": ParameterValue(robot_description_content, value_type=str)}],
         remappings=[('joint_states', '/joint_states')],
         output="screen"
     )

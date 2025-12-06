@@ -31,11 +31,11 @@ class MecanumBaseController(Node):
                 ('loop_rate', 100.0),      # Control loop frequency
                 ('enable_axis', -1),      # Joystick axis for enabling motion (optional)
                 ('enable_axis_threshold', 0.5),
-                ('max_linear_speed', 2.0), # Max robot speed m/s (used for scaling)
-                ('max_angular_speed', 4.0),# Max robot rot speed rad/s (used for scaling)
+                ('max_linear_speed', 0.25), # Max robot speed m/s (Limited by MX-106R ~45RPM)
+                ('max_angular_speed', 0.6),# Max robot rot speed rad/s
                 ('zero_cmd_threshold', 0.001), # Treat cmd_vel below this as zero
                 ('cmd_vel_debounce', 0.01),   # Ignore cmd_vel faster than this
-                ('max_wheel_omega', 8.16),    # Max wheel angular velocity rad/s
+                ('max_wheel_omega', 4.8),    # Max wheel angular velocity rad/s (45RPM ~ 4.71 rad/s)
             ]
         )
 
