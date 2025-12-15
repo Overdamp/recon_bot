@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import rclpy
 from rclpy.node import Node
+import rclpy.qos
 from geometry_msgs.msg import Twist, TransformStamped
 from sensor_msgs.msg import JointState
 from nav_msgs.msg import Odometry
@@ -31,11 +32,11 @@ class MecanumBaseController(Node):
                 ('loop_rate', 100.0),      # Control loop frequency
                 ('enable_axis', -1),      # Joystick axis for enabling motion (optional)
                 ('enable_axis_threshold', 0.5),
-                ('max_linear_speed', 0.25), # Max robot speed m/s (Limited by MX-106R ~45RPM)
-                ('max_angular_speed', 0.6),# Max robot rot speed rad/s
+                ('max_linear_speed', 0.4), # Increased to allow full motor RPM (Physical limit ~0.3 m/s)
+                ('max_angular_speed', 1.2),# Increased to allow full rotation speed
                 ('zero_cmd_threshold', 0.001), # Treat cmd_vel below this as zero
                 ('cmd_vel_debounce', 0.01),   # Ignore cmd_vel faster than this
-                ('max_wheel_omega', 4.8),    # Max wheel angular velocity rad/s (45RPM ~ 4.71 rad/s)
+                ('max_wheel_omega', 5.0),    # Slightly increased max wheel omega (approx 48 RPM)
             ]
         )
 
@@ -109,7 +110,7 @@ class MecanumBaseController(Node):
         # Publishers
         self.joint_cmd_pub = self.create_publisher(
             Float64MultiArray, '/velocity_controller/commands', 10)
-        self.odom_pub = self.create_publisher(Odometry, '/wheel_odom', 10)
+        self.odom_pub = self.create_publisher(Odometry, '/wheel_odom', rclpy.qos.qos_profile_sensor_data)
 
         # TF broadcaster
         self.tf_broadcaster = TransformBroadcaster(self)

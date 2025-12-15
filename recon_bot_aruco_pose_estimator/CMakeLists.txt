@@ -19,6 +19,7 @@ ament_python_install_package(${PROJECT_NAME})
 install(PROGRAMS
 
 scripts/aruco_marker.py
+scripts/apriltag_marker.py
 
 DESTINATION lib/${PROJECT_NAME}
 )

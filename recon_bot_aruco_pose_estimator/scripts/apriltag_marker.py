@@ -9,8 +9,7 @@ from sensor_msgs.msg import Image, CameraInfo
 from geometry_msgs.msg import PoseStamped
 from tf2_ros import TransformBroadcaster
 from geometry_msgs.msg import TransformStamped
-import tf_transformations
-
+import math
 
 class AprilTagMarkerNode(Node):
     def __init__(self):
@@ -63,19 +62,67 @@ class AprilTagMarkerNode(Node):
         self.camera_matrix = np.array(msg.k).reshape((3, 3))
         self.dist_coeffs = np.array(msg.d)
 
+    def euler_from_matrix(self, R):
+        """
+        Extract Euler angles (roll, pitch, yaw) from rotation matrix.
+        Assumes Z-Y-X Extrinsic (equivalent to X-Y-Z Intrinsic 'rxyz').
+        R = Rz(yaw) * Ry(pitch) * Rx(roll)
+        """
+        sy = math.sqrt(R[0,0] * R[0,0] + R[1,0] * R[1,0])
+        singular = sy < 1e-6
+        if not singular:
+            x = math.atan2(R[2,1], R[2,2])
+            y = math.atan2(-R[2,0], sy)
+            z = math.atan2(R[1,0], R[0,0])
+        else:
+            x = math.atan2(-R[1,2], R[1,1])
+            y = math.atan2(-R[2,0], sy)
+            z = 0
+        return x, y, z
+
+    def euler_matrix(self, roll, pitch, yaw):
+        """
+        Create rotation matrix from Euler angles (roll, pitch, yaw).
+        Assumes Z-Y-X Extrinsic (equivalent to X-Y-Z Intrinsic 'rxyz').
+        R = Rz(yaw) * Ry(pitch) * Rx(roll)
+        """
+        c1 = math.cos(roll)
+        s1 = math.sin(roll)
+        c2 = math.cos(pitch)
+        s2 = math.sin(pitch)
+        c3 = math.cos(yaw)
+        s3 = math.sin(yaw)
+        
+        R = np.array([
+            [c2*c3, -c2*s3, s2],
+            [c1*s3 + c3*s1*s2, c1*c3 - s1*s2*s3, -c2*s1],
+            [s1*s3 - c1*c3*s2, c3*s1 + c1*s2*s3, c1*c2]
+        ])
+        return R
+
     def image_callback(self, msg):
         # Skip frames to reduce the load on the system
         self.frame_count += 1
-        if self.frame_count % self.frame_skip != 0 or self.camera_matrix is None or self.dist_coeffs is None:
+        if self.frame_count % self.frame_skip != 0:
+            return
+
+        if self.camera_matrix is None or self.dist_coeffs is None:
+            if self.frame_count % 30 == 0: # Log every 30 frames (approx 1 sec)
+                self.get_logger().warn('Waiting for Camera Info...')
             return
 
         # Convert the ROS2 Image message to an OpenCV image
-        frame = self.bridge.imgmsg_to_cv2(msg, 'bgr8')
+        try:
+            frame = self.bridge.imgmsg_to_cv2(msg, 'bgr8')
+        except Exception as e:
+            self.get_logger().error(f'Failed to convert image: {e}')
+            return
 
         # Detect the markers in the frame
         corners, ids, _ = cv2.aruco.detectMarkers(frame, self.aruco_dict, parameters=self.parameters)
 
         if ids is not None:
+            self.get_logger().info(f'Detected {len(ids)} markers: {ids.flatten()}')
             # Estimate pose of each marker
             marker_size = 0.1  # Size of AprilTag marker (meters) - Adjust if yours is different!
             rvecs, tvecs, _ = cv2.aruco.estimatePoseSingleMarkers(corners, marker_size, self.camera_matrix, self.dist_coeffs)
@@ -93,7 +140,7 @@ class AprilTagMarkerNode(Node):
                 rotation_matrix, _ = cv2.Rodrigues(rvec)
 
                 # Convert rotation matrix to Euler angles
-                euler_angles = tf_transformations.euler_from_matrix(rotation_matrix, 'rxyz')
+                euler_angles = self.euler_from_matrix(rotation_matrix)
 
                 # Adjust Euler angles (correcting axis alignment for ZED/ROS standard)
                 adjusted_euler = (
@@ -103,11 +150,11 @@ class AprilTagMarkerNode(Node):
                 )
 
                 # Convert adjusted Euler angles back to a rotation matrix
-                adjusted_rotation_matrix = tf_transformations.euler_matrix(*adjusted_euler, 'rxyz')[:3, :3]
+                adjusted_rotation_matrix = self.euler_matrix(*adjusted_euler)[:3, :3]
 
                 # Optional: Apply additional rotation (180 degrees on Z-axis if needed)
                 # Apply additional rotation to fix X and Y alignment
-                rotation_matrix_x = tf_transformations.euler_matrix(np.pi, 0, 0, 'rxyz')[:3, :3]  # Rotate 180 degrees around Y-axis
+                rotation_matrix_x = self.euler_matrix(np.pi, 0, 0)[:3, :3]  # Rotate 180 degrees around X-axis
 
                 # Apply the rotations in sequence: Z rotation first, then Y rotation
                 adjusted_rotation_matrix = np.dot(rotation_matrix_x, adjusted_rotation_matrix)

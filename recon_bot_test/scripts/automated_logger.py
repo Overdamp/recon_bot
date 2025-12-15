@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import rclpy
 from rclpy.node import Node
 from nav_msgs.msg import Odometry
@@ -9,6 +7,9 @@ import time
 import math
 import os
 from datetime import datetime
+from tf2_ros import Buffer, TransformListener
+from tf2_ros import LookupException, ConnectivityException, ExtrapolationException
+from rclpy.qos import qos_profile_sensor_data
 
 class AutomatedLogger(Node):
     def __init__(self):
@@ -43,20 +44,19 @@ class AutomatedLogger(Node):
         self.start_apriltag_pose = None
         
         self.current_odom = None
-        self.current_apriltag = None
         
+        # TF Buffer
+        self.tf_buffer = Buffer()
+        self.tf_listener = TransformListener(self.tf_buffer, self)
+
         # Subscribers
-        self.create_subscription(Odometry, '/wheel_odom', self.odom_callback, 10)
-        self.create_subscription(PoseStamped, '/apriltag_marker_pose', self.apriltag_callback, 10)
+        self.create_subscription(Odometry, '/wheel_odom', self.odom_callback, qos_profile_sensor_data)
         
         # Timer for synchronous logging (10 Hz)
         self.create_timer(0.1, self.logging_loop)
 
     def odom_callback(self, msg):
         self.current_odom = msg
-
-    def apriltag_callback(self, msg):
-        self.current_apriltag = msg
 
     def logging_loop(self):
         if self.current_odom is None:
@@ -79,20 +79,30 @@ class AutomatedLogger(Node):
         # Calculate Odom Distance from Start
         odom_dist = math.sqrt((odom_x - self.start_odom_pose[0])**2 + (odom_y - self.start_odom_pose[1])**2)
 
-        # Extract AprilTag Data (if available)
+        # Extract AprilTag Data (via TF)
         apriltag_x, apriltag_y, apriltag_z = 0.0, 0.0, 0.0
         apriltag_dist = 0.0
         
-        if self.current_apriltag:
-            # Note: apriltag_marker.py publishes position of MARKER in CAMERA frame
-            # So "Distance" is just the magnitude of the position vector
-            # But we want "Distance Moved". 
-            # If robot moves 1m away, the magnitude increases by 1m.
-            # Let's record the raw vector.
+        try:
+            # Look up transform from camera frame to tag frame
+            # We want the position of the TAG relative to the CAMERA (or vice versa)
+            # apriltag_ros publishes TF: camera_frame -> tag_frame (named 'apriltag_marker_23')
+            # So we want transform: target='zed_left_camera_frame', source='apriltag_marker_23'
+            # Wait, usually we want Tag position in Camera frame.
+            # So target='zed_left_camera_frame', source='apriltag_marker_23' gives position of Tag in Camera frame.
             
-            ax = self.current_apriltag.pose.position.x
-            ay = self.current_apriltag.pose.position.y
-            az = self.current_apriltag.pose.position.z
+            # Note: The frame name depends on how apriltag_ros is configured.
+            # In tags_36h11.yaml we set: tag_frames: ["apriltag_marker_23"]
+            
+            t = self.tf_buffer.lookup_transform(
+                'zed_left_camera_frame', 
+                'apriltag_marker_23', 
+                rclpy.time.Time()
+            )
+            
+            ax = t.transform.translation.x
+            ay = t.transform.translation.y
+            az = t.transform.translation.z
             
             apriltag_x, apriltag_y, apriltag_z = ax, ay, az
             
@@ -101,11 +111,14 @@ class AutomatedLogger(Node):
                 self.get_logger().info('AprilTag Start Pose Recorded')
             
             # Calculate displacement from start vector
-            # This is roughly the distance moved if rotation is small
             dx = ax - self.start_apriltag_pose[0]
             dy = ay - self.start_apriltag_pose[1]
             dz = az - self.start_apriltag_pose[2]
             apriltag_dist = math.sqrt(dx*dx + dy*dy + dz*dz)
+            
+        except (LookupException, ConnectivityException, ExtrapolationException):
+            # Tag not visible
+            pass
 
         # Write to CSV
         self.csv_writer.writerow([
