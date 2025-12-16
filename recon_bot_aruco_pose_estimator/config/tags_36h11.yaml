@@ -1,0 +1,14 @@
+apriltag:
+  ros__parameters:
+    family: "36h11"
+    size: 0.1
+    max_hamming: 0
+    z_up: true
+    # decimate: 1.0
+    # blur: 0.0
+    # refine-edges: 1
+    # threads: 2
+    # debug: 0
+    tag_ids: [23]
+    tag_frames: ["apriltag_marker_23"]
+    tag_sizes: [0.1]
