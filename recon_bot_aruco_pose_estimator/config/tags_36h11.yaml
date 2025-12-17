@@ -9,6 +9,7 @@ apriltag:
     # refine-edges: 1
     # threads: 2
     # debug: 0
-    tag_ids: [23]
-    tag_frames: ["apriltag_marker_23"]
-    tag_sizes: [0.1]
+    tag:
+      ids: [23]
+      frames: ["apriltag_marker_23"]
+      sizes: [0.1]

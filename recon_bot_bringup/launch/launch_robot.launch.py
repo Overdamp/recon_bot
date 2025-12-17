@@ -18,7 +18,7 @@ def generate_launch_description():
             get_package_share_directory(package_name_control), 'launch', 'mecanum_control.launch.py'
         )]),
         # Pass 'zed' as default, or 'zed_mobile' if you want to match vio_slam exactly
-        # launch_arguments={'camera_name': 'zed'}.items() 
+        launch_arguments={'camera_name': 'zed_mobile'}.items() 
     )
 
     # 2. RPLidar (Front + Back)

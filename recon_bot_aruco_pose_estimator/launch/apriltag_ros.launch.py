@@ -26,6 +26,7 @@ def generate_launch_description():
                 config_file,
                 {'qos_overrides./image_rect.subscription.reliability': 'best_effort'},
                 {'qos_overrides./camera_info.subscription.reliability': 'best_effort'},
+                {'publish_tf': True}, # Force TF publishing
             ]
         )
     ])
