@@ -19,8 +19,8 @@ def generate_launch_description():
             name='apriltag_node',
             output='screen',
             remappings=[
-                ('image_rect', '/zed/zed_node/left/image_rect_color'),
-                ('camera_info', '/zed/zed_node/left/camera_info'),
+                ('image_rect', '/zed_mobile/zed_node/left/image_rect_color'),
+                ('camera_info', '/zed_mobile/zed_node/left/camera_info'),
             ],
             parameters=[
                 config_file,

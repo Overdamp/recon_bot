@@ -34,7 +34,8 @@ class AutomatedLogger(Node):
             'timestamp', 
             'odom_x', 'odom_y', 'odom_yaw', 
             'apriltag_x', 'apriltag_y', 'apriltag_z', # AprilTag is 3D
-            'odom_dist_from_start', 'apriltag_dist_from_start'
+            'odom_dist_from_start', 'apriltag_dist_from_start',
+            'tag_visible'
         ])
         
         self.get_logger().info(f'Logging to: {self.filename}')
@@ -82,21 +83,26 @@ class AutomatedLogger(Node):
         # Extract AprilTag Data (via TF)
         apriltag_x, apriltag_y, apriltag_z = 0.0, 0.0, 0.0
         apriltag_dist = 0.0
+        tag_visible = False
         
         try:
             # Look up transform from camera frame to tag frame
-            # We want the position of the TAG relative to the CAMERA (or vice versa)
-            # apriltag_ros publishes TF: camera_frame -> tag_frame (named 'apriltag_marker_23')
-            # So we want transform: target='zed_left_camera_frame', source='apriltag_marker_23'
-            # Wait, usually we want Tag position in Camera frame.
-            # So target='zed_left_camera_frame', source='apriltag_marker_23' gives position of Tag in Camera frame.
+            # We want the position of the ROBOT relative to the TAG (or vice versa)
+            # But usually we want to track the robot's position in the TAG's frame (fixed world frame)
+            # OR track the TAG's position in the ROBOT's frame.
             
-            # Note: The frame name depends on how apriltag_ros is configured.
-            # In tags_36h11.yaml we set: tag_frames: ["apriltag_marker_23"]
+            # Let's assume we want to track the robot's movement relative to the fixed tag.
+            # So we want transform: target='apriltag_marker_23', source='base_footprint'
+            # This gives us the position of the robot base in the tag's coordinate system.
+            
+            # Look up transform from fixed world frame (Tag) to Robot Base
+            # This assumes 'apriltag_marker_23' is published as a fixed frame or linked to map/odom
+            # If apriltag_ros publishes 'camera' -> 'tag', then 'tag' moves with the camera in the TF tree unless we have a static transform.
+            # For this test, we want to see the robot's motion relative to the Tag.
             
             t = self.tf_buffer.lookup_transform(
-                'zed_left_camera_frame', 
-                'apriltag_marker_23', 
+                'apriltag_marker_23', # Target Frame (The Tag)
+                'base_footprint',     # Source Frame (The Robot)
                 rclpy.time.Time()
             )
             
@@ -105,10 +111,11 @@ class AutomatedLogger(Node):
             az = t.transform.translation.z
             
             apriltag_x, apriltag_y, apriltag_z = ax, ay, az
+            tag_visible = True
             
             if self.start_apriltag_pose is None:
                 self.start_apriltag_pose = (ax, ay, az)
-                self.get_logger().info('AprilTag Start Pose Recorded')
+                self.get_logger().info('AprilTag Start Pose Recorded (Robot in Tag Frame)')
             
             # Calculate displacement from start vector
             dx = ax - self.start_apriltag_pose[0]
@@ -117,7 +124,7 @@ class AutomatedLogger(Node):
             apriltag_dist = math.sqrt(dx*dx + dy*dy + dz*dz)
             
         except (LookupException, ConnectivityException, ExtrapolationException):
-            # Tag not visible
+            # Tag not visible or TF not ready
             pass
 
         # Write to CSV
@@ -125,7 +132,8 @@ class AutomatedLogger(Node):
             time.time(),
             f'{odom_x:.4f}', f'{odom_y:.4f}', f'{odom_yaw:.4f}',
             f'{apriltag_x:.4f}', f'{apriltag_y:.4f}', f'{apriltag_z:.4f}',
-            f'{odom_dist:.4f}', f'{apriltag_dist:.4f}'
+            f'{odom_dist:.4f}', f'{apriltag_dist:.4f}',
+            tag_visible
         ])
         self.csv_file.flush() # Ensure data is written
 

@@ -32,11 +32,23 @@ class MecanumBaseController(Node):
                 ('loop_rate', 100.0),      # Control loop frequency
                 ('enable_axis', -1),      # Joystick axis for enabling motion (optional)
                 ('enable_axis_threshold', 0.5),
-                ('max_linear_speed', 0.4), # Increased to allow full motor RPM (Physical limit ~0.3 m/s)
-                ('max_angular_speed', 1.2),# Increased to allow full rotation speed
+                
+                # --- Speed Limits for Dynamixel MX-106R ---
+                # Specs: No-load speed 45 RPM @ 12V (~4.71 rad/s)
+                # Max Linear Speed (Theoretical): 4.71 rad/s * 0.062m = 0.29 m/s
+                # Safe Limit (with load): ~85% of theoretical = 0.25 m/s
+                ('max_linear_speed', 0.25), 
+                
+                # Max Angular Speed: v_wheel / (Lx + Ly)
+                # L = 0.245 + 0.2 = 0.445 m
+                # Max Omega = 0.25 / 0.445 = ~0.56 rad/s
+                ('max_angular_speed', 0.55),
+
                 ('zero_cmd_threshold', 0.001), # Treat cmd_vel below this as zero
                 ('cmd_vel_debounce', 0.01),   # Ignore cmd_vel faster than this
-                ('max_wheel_omega', 5.0),    # Slightly increased max wheel omega (approx 48 RPM)
+                
+                # Max Wheel Omega: 45 RPM = 4.71 rad/s. Set safe limit to 4.2 rad/s (~40 RPM)
+                ('max_wheel_omega', 4.2),
             ]
         )
 
