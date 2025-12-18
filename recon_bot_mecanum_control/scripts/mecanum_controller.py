@@ -477,18 +477,19 @@ class MecanumBaseController(Node):
         self.odom_pub.publish(odom_msg)
 
         # TF broadcast
-        # t = TransformStamped()
-        # t.header.stamp = now.to_msg()
-        # t.header.frame_id = 'odom'
-        # t.child_frame_id = 'base_footprint'
-        # t.transform.translation.x = float(self.x)
-        # t.transform.translation.y = float(self.y)
-        # t.transform.translation.z = 0.0
-        # t.transform.rotation = odom_msg.pose.pose.orientation # Use the calculated quaternion
-        # try:
-        #     self.tf_broadcaster.sendTransform(t)
-        # except Exception as e:
-        #     self.get_logger().error(f"Failed to send TF transform: {e}")
+        # TF broadcast
+        t = TransformStamped()
+        t.header.stamp = now.to_msg()
+        t.header.frame_id = 'odom'
+        t.child_frame_id = 'base_footprint'
+        t.transform.translation.x = float(self.x)
+        t.transform.translation.y = float(self.y)
+        t.transform.translation.z = 0.0
+        t.transform.rotation = odom_msg.pose.pose.orientation # Use the calculated quaternion
+        try:
+            self.tf_broadcaster.sendTransform(t)
+        except Exception as e:
+            self.get_logger().error(f"Failed to send TF transform: {e}")
 
 
     def shutdown(self):

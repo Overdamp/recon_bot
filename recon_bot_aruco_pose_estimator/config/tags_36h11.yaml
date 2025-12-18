@@ -1,15 +1,21 @@
-apriltag:
+apriltag_node:
   ros__parameters:
-    family: "36h11"
-    size: 0.1
+    image_transport: "raw"
+    tag_families: "tag36h11"
+    tag_sizes: [0.1]
     max_hamming: 0
     z_up: true
-    # decimate: 1.0
-    # blur: 0.0
-    # refine-edges: 1
-    # threads: 2
-    # debug: 0
+    publish_tf: true
+
+    detector:
+      threads: 2
+      decimate: 1.0
+      blur: 0.0
+      refine: true
+      refine_edges: true
+      decode_sharpening: 0.25
+
     tag:
-      ids: [23]
-      frames: ["apriltag_marker_23"]
+      ids: [21]
+      frames: ["tag36h11:21"]
       sizes: [0.1]
