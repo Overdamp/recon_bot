@@ -13,6 +13,7 @@ from tf2_ros import Buffer, TransformListener
 from tf2_ros import LookupException, ConnectivityException, ExtrapolationException
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
 
 class OpenLoopBaseline(Node):
     def __init__(self):
@@ -164,6 +165,13 @@ def plot_results(filename):
         # Normalize Data
         odom_x = df['odom_x'].to_numpy(); odom_x -= odom_x[0]
         odom_y = df['odom_y'].to_numpy(); odom_y -= odom_y[0]
+
+        # Rotate Odom by 5 degrees counter-clockwise (User Request)
+        theta = np.radians(5)
+        c, s = np.cos(theta), np.sin(theta)
+        odom_x_rot = odom_x * c - odom_y * s
+        odom_y_rot = odom_x * s + odom_y * c
+        odom_x, odom_y = odom_x_rot, odom_y_rot
         
         gt_data = df[df['gt_valid'] == True]
         if not gt_data.empty:

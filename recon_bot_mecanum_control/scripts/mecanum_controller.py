@@ -49,6 +49,8 @@ class MecanumBaseController(Node):
                 
                 # Max Wheel Omega: 45 RPM = 4.71 rad/s. Set safe limit to 4.2 rad/s (~40 RPM)
                 ('max_wheel_omega', 4.2),
+
+                ('enable_odom_tf', True), # Enable/Disable TF broadcasting
             ]
         )
 
@@ -67,7 +69,9 @@ class MecanumBaseController(Node):
         self.max_angular_speed = self.get_parameter('max_angular_speed').value
         self.zero_cmd_threshold = self.get_parameter('zero_cmd_threshold').value
         self.cmd_vel_debounce = self.get_parameter('cmd_vel_debounce').value
+        self.cmd_vel_debounce = self.get_parameter('cmd_vel_debounce').value
         self.max_wheel_omega = self.get_parameter('max_wheel_omega').value
+        self.enable_odom_tf = self.get_parameter('enable_odom_tf').value
 
         # Basic Parameter Validation
         if self.r <= 0:
@@ -486,10 +490,13 @@ class MecanumBaseController(Node):
         t.transform.translation.y = float(self.y)
         t.transform.translation.z = 0.0
         t.transform.rotation = odom_msg.pose.pose.orientation # Use the calculated quaternion
-        try:
-            self.tf_broadcaster.sendTransform(t)
-        except Exception as e:
-            self.get_logger().error(f"Failed to send TF transform: {e}")
+        t.transform.rotation = odom_msg.pose.pose.orientation # Use the calculated quaternion
+        
+        if self.enable_odom_tf:
+            try:
+                self.tf_broadcaster.sendTransform(t)
+            except Exception as e:
+                self.get_logger().error(f"Failed to send TF transform: {e}")
 
 
     def shutdown(self):

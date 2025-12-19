@@ -84,7 +84,7 @@ def generate_launch_description():
         executable="mecanum_controller.py",
         name="mecanum_controller",
         output="screen",
-        parameters=[{"use_sim_time": False}],
+        parameters=[{"use_sim_time": False, "enable_odom_tf": False}],
         remappings=[('/cmd_vel', '/cmd_vel_mux')] # Listen to Mux output
     )
 

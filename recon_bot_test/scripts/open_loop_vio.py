@@ -13,6 +13,7 @@ from tf2_ros import Buffer, TransformListener
 from tf2_ros import LookupException, ConnectivityException, ExtrapolationException
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
 
 class OpenLoopVIO(Node):
     def __init__(self):
@@ -164,16 +165,35 @@ def plot_results(filename):
         # Normalize Data
         odom_x = df['odom_x'].to_numpy(); odom_x -= odom_x[0]
         odom_y = df['odom_y'].to_numpy(); odom_y -= odom_y[0]
+
+        # Rotate Odom by 5 degrees counter-clockwise (User Request)
+        theta = np.radians(5)
+        c, s = np.cos(theta), np.sin(theta)
+        odom_x_rot = odom_x * c - odom_y * s
+        odom_y_rot = odom_x * s + odom_y * c
+        odom_x, odom_y = odom_x_rot, odom_y_rot
         
         gt_data = df[df['gt_valid'] == True]
         if not gt_data.empty:
             gt_x = gt_data['gt_x'].to_numpy(); gt_x -= gt_x[0]
             gt_y = gt_data['gt_y'].to_numpy(); gt_y -= gt_y[0]
-            plt.plot(gt_x, gt_y, label='Ground Truth (SLAM)', color='green', linewidth=2)
+
+            # Rotate GT by 5 degrees counter-clockwise
+            gt_x_rot = gt_x * c - gt_y * s
+            gt_y_rot = gt_x * s + gt_y * c
+            gt_x, gt_y = gt_x_rot, gt_y_rot
+
+            plt.plot(gt_x, gt_y, label='Ground Truth (SLAM)', color='green', linestyle='--', linewidth=2)
             plt.scatter(gt_x[0], gt_y[0], color='green', marker='x')
             
         plt.plot(odom_x, odom_y, label='VIO Fused (EKF)', color='purple', linestyle='--')
         plt.scatter(0, 0, color='purple', marker='o', label='Start')
+
+        # Ideal Square Path (1.0m x 1.0m) - No Rotation
+        ideal_x = np.array([0, 1.0, 1.0, 0, 0])
+        ideal_y = np.array([0, 0, 1.0, 1.0, 0])
+        
+        plt.plot(ideal_x, ideal_y, label='Ideal Path', color='red', linestyle='-', linewidth=1.5)
         
         plt.title('VIO Experiment: Fused Odom vs Ground Truth')
         plt.xlabel('X (m)'); plt.ylabel('Y (m)')

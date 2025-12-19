@@ -19,6 +19,7 @@ ament_python_install_package(${PROJECT_NAME})
 install(PROGRAMS
 
 scripts/lidar_merge.py
+scripts/save_map.sh
 
 DESTINATION lib/${PROJECT_NAME}
 )
@@ -29,6 +30,7 @@ install(DIRECTORY
   launch
   rviz
   scripts
+  maps
   DESTINATION share/${PROJECT_NAME})
 
 ament_package()
