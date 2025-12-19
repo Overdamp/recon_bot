@@ -2,8 +2,9 @@ import os
 import xacro
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription
+from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument
 from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 
 def generate_launch_description():
@@ -13,6 +14,12 @@ def generate_launch_description():
     package_name_bringup = f"{robot_name}_bringup"
     package_name_slam = f"{robot_name}_slam"
     package_name_nav = f"{robot_name}_navigation"
+
+    map_arg = DeclareLaunchArgument(
+        'map',
+        default_value=os.path.join(get_package_share_directory(package_name_nav), 'config', 'slam_map.yaml'),
+        description='Full path to map yaml file to load'
+    )
 
     # Define the paths for various files
     ekf_config_path = os.path.join(
@@ -70,7 +77,7 @@ def generate_launch_description():
         executable="mecanum_controller.py",
         name="mecanum_controller",
         output="screen",
-        parameters=[{"use_sim_time": False}],
+        parameters=[{"use_sim_time": False, "enable_odom_tf": False}],
         remappings=[('/cmd_vel', '/cmd_vel_mux')] # Listen to Mux output
     )
 
@@ -86,10 +93,12 @@ def generate_launch_description():
     nav2_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([os.path.join(
             get_package_share_directory(package_name_nav), 'launch', 'nav2_custom.launch.py'
-        )])
+        )]),
+        launch_arguments={'map': LaunchConfiguration('map')}.items()
     )
 
     return LaunchDescription([
+        map_arg,
         joy_cmd_vel_node,
         mecanum_rplidar_merge,
         mecanum_lidar_node,
